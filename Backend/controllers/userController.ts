@@ -13,7 +13,7 @@ import sendToken from "../utils/jwtToken";
 // @Route /api/users/create-user
 // @Method POST
 
-const uploadFile = upload.single('file');
+// const uploadFile = upload.single('file');
 const uploadFiles = async(req : Request, res : Response, next :NextFunction) => {
     try {
         const {name, email, password } = req.body
@@ -21,7 +21,7 @@ const uploadFiles = async(req : Request, res : Response, next :NextFunction) => 
 
         if(userEmail) {
            if(req.file){
-            const filename = req.file?.filename;
+            const filename = req.file.filename;
             const filePath = `uploads/${filename}`;
             fs.unlink(filePath, (err) => {
                 if(err){
@@ -29,13 +29,16 @@ const uploadFiles = async(req : Request, res : Response, next :NextFunction) => 
                     res.status(500).json({message: "Error deleting file"});
                 }
             });
-           }
+
             return next(new ErrorHandler("User already exists", 400))
+           }
+           
         }
 
         if (!req.file) {
             return next(new ErrorHandler('No file provided', 400));
           }
+          
         const filename = req.file.filename;
         const fileUrl = path.join(filename)
 
@@ -45,7 +48,7 @@ const uploadFiles = async(req : Request, res : Response, next :NextFunction) => 
             password: password,
             avatar: fileUrl
         };
-
+        
         const activationToken = createActivationToken(user);
 
         const activationUrl = `http://localhost:3000/${activationToken}`
@@ -386,7 +389,7 @@ const deleteUser = asyncHandler(async(req:Request, res:Response, next: NextFunct
 
 export {
     uploadFiles,
-    uploadFile,
+    // uploadFile,
     activateUser,
     loginUser,
     getUser,

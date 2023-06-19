@@ -1,9 +1,9 @@
-import multer from "multer";
+import multer, { StorageEngine } from "multer";
 import path from "path";
 
-const storage = multer.diskStorage({
-    destination: function (req, res, cb) {
-        cb(null, path.join(__dirname, './uploads'));
+const storage: StorageEngine = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, path.join(__dirname, "./uploads"));
     },
     filename: function (req, file, cb){
         const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);

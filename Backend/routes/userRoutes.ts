@@ -1,10 +1,11 @@
 import express from  "express";
-import { UpdateUserPassword, activateUser, adminGetUser, deleteUser, getUser, getUserInfo, logOutUser, loginUser, updateAvatar, updateUserInfo, uploadFile, uploadFiles } from "../controllers/userController";
+import { UpdateUserPassword, activateUser, adminGetUser, deleteUser, getUser, getUserInfo, logOutUser, loginUser, updateAvatar, updateUserInfo, uploadFiles } from "../controllers/userController";
+import upload from "../utils/multer";
 
 
 const router = express.Router();
 
-router.route("/create-user").post(uploadFile, uploadFiles);
+router.route("/create-user").post(upload.single("file"), uploadFiles);
 router.route("/activation").post(activateUser);
 router.route("/login-user").post(loginUser);
 router.route("/get-user").get(getUser);

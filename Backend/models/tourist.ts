@@ -66,12 +66,11 @@ const TouristSchema = new mongoose.Schema({
 });
 
 //Hash password
-TouristSchema.pre("save", async function (next){
-    const user = this as ITourist
-    if(!user.isModified("password")){
+TouristSchema.pre<ITourist>("save", async function (next){
+    if(!this.isModified("password")){
         next();
     }
-    user.password = await bcrypt.hash(user.password, 10);
+    this.password = await bcrypt.hash(this.password, 10);
 })
 
 //jwt token

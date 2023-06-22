@@ -1,18 +1,18 @@
 import express, { NextFunction, Request, Response } from "express";
 import asyncHandler from "express-async-handler";
-import Tour from "../models/tour";
-import { ITour, ITourRequest } from "../interface/Tour";
+import Tour, {ITour, ITourRequest } from "../models/tour";
 import fs from 'fs';
 import *as jwt from "jsonwebtoken";
 import path from "path";
 import ErrorHandler from "../utils/ErrorHandler";
 import sendMail from "../utils/sendMail";
+import sendTourToken from "../utils/TourToken";
 
 
 // create Tour
 const createTourGuard = asyncHandler(async(req: Request, res:Response, next:NextFunction) => {
     try {
-        const { email } = req.body as ITour
+        const { email } = req.body
         const tourGuardEmailEmail = await Tour.findOne({email});
 
         if(tourGuardEmailEmail) {
@@ -207,3 +207,11 @@ const logoutGuard = asyncHandler(async(req: Request, res: Response, next: NextFu
         return next(new ErrorHandler("Unexpected", 500));
     }
 })
+
+export {
+  createTourGuard,
+  activateGuard,
+  logoutGuard,
+  getTour,
+  LoginGuard
+}

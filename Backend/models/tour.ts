@@ -1,7 +1,30 @@
 import mongoose from "mongoose";
-import { ITour } from "../interface/Tour";
 import bcrypt from "bcryptjs" ;
 import jwt from "jsonwebtoken"
+import { Request } from "express";
+
+
+
+export interface ITourRequest extends Request {
+  tourGuard?: any
+}
+
+export interface ITour extends mongoose.Document{
+  id: string;
+  name: string;
+  email: string;
+  password: string;
+  address: string;
+  phoneNumber: Number;
+  role: string;
+  zipCode: Number;
+  avatar: string;
+  createdAt: Date;
+  updatedAt: Date;
+  comparePassword(enteredPassword: string): Promise<Boolean>;
+  getJwtToken(): string;
+}
+
 
 const TourSchema = new mongoose.Schema({
     name: {
@@ -38,14 +61,6 @@ const TourSchema = new mongoose.Schema({
         type: Number,
         required: true,
       },
-      createdAt:{
-        type: Date,
-        default: Date.now(),
-      },
-      updatedAt:{
-        type: Date,
-        default: Date.now(),
-      },
 
       resetPasswordToken: String,
       resetPasswordTime: Date,
@@ -55,12 +70,12 @@ const TourSchema = new mongoose.Schema({
 })
 
 // Hash password
-TourSchema.pre("save", async function (next) {
-    const user = this as ITour
-    if(!user.isModified("password")) {
+TourSchema.pre<ITour>("save", async function (next) {
+    // const user = this as ITour
+    if(!this.isModified("password")) {
       next();
     }
-    user.password = await bcrypt.hash(user.password, 10);
+    this.password = await bcrypt.hash(this.password, 10);
     
   });
   

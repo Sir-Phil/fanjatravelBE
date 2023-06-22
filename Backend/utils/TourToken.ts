@@ -18,5 +18,4 @@ const sendTourToken = (user : any, statusCode: any, res: any) => {
     });
   };
   
-  module.exports = sendTourToken;
-  
+export default sendTourToken  

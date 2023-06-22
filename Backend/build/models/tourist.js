@@ -55,11 +55,10 @@ const TouristSchema = new mongoose_1.default.Schema({
 //Hash password
 TouristSchema.pre("save", function (next) {
     return __awaiter(this, void 0, void 0, function* () {
-        const user = this;
-        if (!user.isModified("password")) {
+        if (!this.isModified("password")) {
             next();
         }
-        user.password = yield bcryptjs_1.default.hash(user.password, 10);
+        this.password = yield bcryptjs_1.default.hash(this.password, 10);
     });
 });
 //jwt token

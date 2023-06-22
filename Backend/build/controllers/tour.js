@@ -43,6 +43,7 @@ const jwt = __importStar(require("jsonwebtoken"));
 const path_1 = __importDefault(require("path"));
 const ErrorHandler_1 = __importDefault(require("../utils/ErrorHandler"));
 const sendMail_1 = __importDefault(require("../utils/sendMail"));
+const TourToken_1 = __importDefault(require("../utils/TourToken"));
 // create Tour
 const createTourGuard = (0, express_async_handler_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -153,7 +154,7 @@ const activateGuard = (0, express_async_handler_1.default)((req, res, next) => _
             address,
             phoneNumber,
         });
-        sendTourToken(tourGuard, 201, res);
+        (0, TourToken_1.default)(tourGuard, 201, res);
     }
     catch (error) {
         return next(new ErrorHandler_1.default("Unexpected", 500));
@@ -175,7 +176,7 @@ const LoginGuard = (0, express_async_handler_1.default)((req, res, next) => __aw
         if (!isPasswordValid) {
             return next(new ErrorHandler_1.default("Please provide the correct information", 400));
         }
-        sendTourToken(tourGuard, 201, res);
+        (0, TourToken_1.default)(tourGuard, 201, res);
     }
     catch (error) {
         return next(new ErrorHandler_1.default("Unexpected", 500));

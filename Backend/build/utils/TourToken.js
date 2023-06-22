@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 // create token and saving that in cookies
 const sendTourToken = (user, statusCode, res) => {
     const token = user.getJwtToken();
@@ -15,4 +16,4 @@ const sendTourToken = (user, statusCode, res) => {
         token,
     });
 };
-module.exports = sendTourToken;
+exports.default = sendTourToken;

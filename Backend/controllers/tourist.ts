@@ -1,6 +1,5 @@
 import asyncHandler from "express-async-handler";
 import { Response, Request, NextFunction } from "express";
-import User, { IUserRequest } from "../models/User";
 import upload from "../utils/multer";
 import fs from 'fs';
 import ErrorHandler from "../utils/ErrorHandler";
@@ -8,6 +7,7 @@ import path from "path";
 import *as jwt from "jsonwebtoken";
 import sendMail from "../utils/sendMail";
 import sendToken from "../utils/jwtToken";
+import Tourist, { ITouristRequest } from "../models/tourist";
 
 // @Desc Create user
 // @Route /api/users/create-user
@@ -17,7 +17,7 @@ import sendToken from "../utils/jwtToken";
 const uploadFiles = async(req : Request, res : Response, next :NextFunction) => {
     try {
         const {name, email, password } = req.body
-        const userEmail = await User.findOne({email});
+        const userEmail = await Tourist.findOne({email});
 
         if(userEmail) {
            if(req.file){
@@ -107,12 +107,12 @@ const activateUser = asyncHandler (async (req: Request, res: Response, next: Nex
     }
     const {name, email, password, avatar } = newUser;
 
-    let user = await User.findOne({email});
+    let user = await Tourist.findOne({email});
 
     if(user){
         return next(new ErrorHandler("User already exists", 400));
     }
-    user = await User.create({
+    user = await Tourist.create({
         name,
         email,
         avatar,
@@ -139,7 +139,7 @@ const loginUser = asyncHandler(async(req: Request, res: Response, next: NextFunc
     if(!email || !password) {
         return next(new ErrorHandler("Please provide all fields", 400));
     }
-    const user = await User.findOne({email}).select("+password");
+    const user = await Tourist.findOne({email}).select("+password");
 
     if(!user){
         return next(new ErrorHandler("User doesn't exists", 400))
@@ -166,9 +166,9 @@ const loginUser = asyncHandler(async(req: Request, res: Response, next: NextFunc
 // @Route /api/users/get-user
 // @Method GET
 
-const getUser = asyncHandler(async(req: IUserRequest, res: Response, next: NextFunction) => {
+const getUser = asyncHandler(async(req: ITouristRequest, res: Response, next: NextFunction) => {
     try {
-        const user = await User.findById(req.user.id);
+        const user = await Tourist.findById(req.user.id);
 
     if(!user) {
         return next(new ErrorHandler("User doesn't exist", 400));
@@ -218,7 +218,7 @@ const updateUserInfo = asyncHandler(async(req: Request, res: Response, next: Nex
     try {
         const {email, password, phoneNumber, name} = req.body;
     
-        const user = await User.findOne({email}).select("+password");
+        const user = await Tourist.findOne({email}).select("+password");
     
         if(!user){
             return next(new ErrorHandler("User not found", 400));
@@ -253,9 +253,9 @@ const updateUserInfo = asyncHandler(async(req: Request, res: Response, next: Nex
 // @Route /api/users/update-avatar
 // @Method Put
 
-const updateAvatar = asyncHandler (async(req: IUserRequest, res: Response, next: NextFunction) => {
+const updateAvatar = asyncHandler (async(req: ITouristRequest, res: Response, next: NextFunction) => {
     try {
-        const existsUser = await User.findById(req.user.id);
+        const existsUser = await Tourist.findById(req.user.id);
     
         const existAvatarPath = `upload/${existsUser?.avatar}`;
     
@@ -267,7 +267,7 @@ const updateAvatar = asyncHandler (async(req: IUserRequest, res: Response, next:
     
         const fileUrl = path.join(req.file.filename);
     
-        const user = await User.findByIdAndUpdate(req.user.id, {
+        const user = await Tourist.findByIdAndUpdate(req.user.id, {
             avatar: fileUrl,
         });
     } catch (error) {
@@ -283,9 +283,9 @@ const updateAvatar = asyncHandler (async(req: IUserRequest, res: Response, next:
 // @Route /api/users/update-user-password
 // @Method Put
 
-const UpdateUserPassword = asyncHandler (async(req: IUserRequest, res: Response, next: NextFunction) => {
+const UpdateUserPassword = asyncHandler (async(req: ITouristRequest, res: Response, next: NextFunction) => {
     try {
-        const user = await User.findById(req.user.id).select("+password");
+        const user = await Tourist.findById(req.user.id).select("+password");
 
         const isPasswordMatched = await user?.comparePassword(
             req.body.oldPassword
@@ -323,7 +323,7 @@ const UpdateUserPassword = asyncHandler (async(req: IUserRequest, res: Response,
 
 const getUserInfo = asyncHandler(async(req: Request, res: Response, next: NextFunction) => {
     try {
-        const user = await User.findById(req.params.id)
+        const user = await Tourist.findById(req.params.id)
 
         res.status(201).json({
         success: true,
@@ -344,7 +344,7 @@ const getUserInfo = asyncHandler(async(req: Request, res: Response, next: NextFu
 
 const adminGetUser = asyncHandler(async(req:Request, res:Response, next: NextFunction) => {
     try {
-        const users = await User.find().sort({
+        const users = await Tourist.find().sort({
             createdAt: -1,
         });
         res.status(201).json({
@@ -366,7 +366,7 @@ const adminGetUser = asyncHandler(async(req:Request, res:Response, next: NextFun
 
 const deleteUser = asyncHandler(async(req:Request, res:Response, next: NextFunction) => {
     try {
-        const user = await User.findById(req.params.id);
+        const user = await Tourist.findById(req.params.id);
 
         if(!user){
             return next(
@@ -374,7 +374,7 @@ const deleteUser = asyncHandler(async(req:Request, res:Response, next: NextFunct
             );
         }
     
-        await User.findByIdAndDelete(req.params.id);
+        await Tourist.findByIdAndDelete(req.params.id);
     
         res.status(201).json({
             success: true,

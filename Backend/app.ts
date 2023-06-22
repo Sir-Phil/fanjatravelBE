@@ -6,7 +6,9 @@ import bodyParser from "body-parser";
 import path from "path";
 
 //imports for routes
-import userRoutes from "./routes/userRoutes"
+import userRoutes from "./routes/userRoutes";
+import tourActivities from "./routes/touractivitiesRoute";
+import categoryRoute from "./routes/categoryRoute";
 
 const app = express();
 
@@ -23,7 +25,9 @@ app.use(bodyParser.urlencoded({extended: true, limit: "50mb"}));
 
 
 //api endpoint routes
-app.use("/api/user", userRoutes)
+app.use("/api/user", userRoutes);
+app.use("/api/activities", tourActivities);
+app.use("/api/category", categoryRoute);
 
 //configurations
 if(process.env.NODE_ENV !== "PRODUCTION") {

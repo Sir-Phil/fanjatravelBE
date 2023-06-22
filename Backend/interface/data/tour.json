@@ -1,0 +1,62 @@
+[
+    {
+        "tourTitle": "City Tour",
+        "period": "3 hours",
+        "description": "Enjoy every taste of Berlin and tour its delicacy",
+        "pricePerPerson": 50,
+        "tourLocation": "Strausberg, Berlin",
+        "rating": 4,
+        "images": [
+            "https://res.cloudinary.com/sirphil/image/upload/v1687403577/fanjatravel/Image5_g1xun0.png",
+            "https://res.cloudinary.com/sirphil/image/upload/v1687403577/fanjatravel/Image6_ikll5r.png",
+            "https://res.cloudinary.com/sirphil/image/upload/v1687403577/fanjatravel/Image1_dklbrq.png",
+            "https://res.cloudinary.com/sirphil/image/upload/v1687403577/fanjatravel/Image4_ng2g5p.png"
+        ],
+        "numberOfReviews": 260
+    },
+    {
+        "tourTitle": "Food Fantasy Tour",
+        "period": "3 hours",
+        "description": "AB Berlin: Tour of the Historical bank of Berlin and hidden treasures",
+        "pricePerPerson": 50,
+        "tourLocation": "Bernau, Berlin",
+        "rating": 5,
+        "images": [
+            "https://res.cloudinary.com/sirphil/image/upload/v1687403577/fanjatravel/Image3_o31alg.png",
+            "https://res.cloudinary.com/sirphil/image/upload/v1687403577/fanjatravel/Image2_z4mznh.png",
+            "https://res.cloudinary.com/sirphil/image/upload/v1687403577/fanjatravel/Image1_dklbrq.png",
+            "https://res.cloudinary.com/sirphil/image/upload/v1687403577/fanjatravel/Image4_ng2g5p.png"
+        ],
+        "numberOfReviews": 160
+    },
+    {
+        "tourTitle": "Food Fantasy Tour",
+        "period": "3 hours",
+        "description": "AB Berlin: Tour of the Historical bank of Berlin and hidden treasures",
+        "pricePerPerson": 50,
+        "tourLocation": "Bernau, Berlin",
+        "rating": 5,
+        "images": [
+            "https://res.cloudinary.com/sirphil/image/upload/v1687403577/fanjatravel/Image3_o31alg.png",
+            "https://res.cloudinary.com/sirphil/image/upload/v1687403577/fanjatravel/Image2_z4mznh.png",
+            "https://res.cloudinary.com/sirphil/image/upload/v1687403577/fanjatravel/Image1_dklbrq.png",
+            "https://res.cloudinary.com/sirphil/image/upload/v1687403577/fanjatravel/Image4_ng2g5p.png"
+        ],
+        "numberOfReviews": 160
+    },
+    {
+        "tourTitle": "City Tour",
+        "period": "3 hours",
+        "description": "Enjoy every taste of Berlin and tour its delicacy",
+        "pricePerPerson": 50,
+        "tourLocation": "Strausberg, Berlin",
+        "rating": 4,
+        "images": [
+            "https://res.cloudinary.com/sirphil/image/upload/v1687403577/fanjatravel/Image5_g1xun0.png",
+            "https://res.cloudinary.com/sirphil/image/upload/v1687403577/fanjatravel/Image6_ikll5r.png",
+            "https://res.cloudinary.com/sirphil/image/upload/v1687403577/fanjatravel/Image1_dklbrq.png",
+            "https://res.cloudinary.com/sirphil/image/upload/v1687403577/fanjatravel/Image4_ng2g5p.png"
+        ],
+        "numberOfReviews": 200
+    }
+]

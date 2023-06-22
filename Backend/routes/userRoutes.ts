@@ -1,5 +1,5 @@
 import express from  "express";
-import { UpdateUserPassword, activateUser, adminGetUser, deleteUser, getUser, getUserInfo, logOutUser, loginUser, updateAvatar, updateUserInfo, uploadFiles } from "../controllers/userController";
+import { UpdateUserPassword, activateUser, adminGetUser, deleteUser, getUser, getUserInfo, logOutUser, loginUser, updateAvatar, updateUserInfo, uploadFiles } from "../controllers/tourist";
 import upload from "../utils/multer";
 
 

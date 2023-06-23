@@ -2,5 +2,5 @@
     "watch": ["database"],
     "ext": ".ts,.js",
     "ignore": [],
-    "exec": "npx ts-node ./database/index.ts"
+    "exec": "npx ts-node ./src/database/index.ts"
 }

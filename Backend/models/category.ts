@@ -3,17 +3,7 @@ import { ICategory } from "../interface/category";
 
 
 const categorySchema = new mongoose.Schema({
-    name:{
-        type: String,
-        required: true,
-    },
-    
     title: {
-        type: String,
-        required: true,
-    },
-
-    place: {
         type: String,
         required: true,
     },

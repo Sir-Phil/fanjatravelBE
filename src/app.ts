@@ -17,7 +17,7 @@ app.use(cors())
 app.use(express.json());
 app.use(cookieParser());
 app.use("/", express.static(path.join(__dirname, "./uploads")));
-app.use("/test", (req, res) => {
+app.use("/test", (_req, res) => {
     res.send("HI")
 });
 
@@ -29,12 +29,6 @@ app.use("/api/user", userRoutes);
 app.use("/api/activities", tourActivities);
 app.use("/api/category", categoryRoute);
 
-//configurations
-if(process.env.NODE_ENV !== "PRODUCTION") {
-    require("dotenv").config({
-        path:"config/.env"
-    });
-}
 
 //for ErrorHandling
 app.use(errorHandler)

@@ -1,5 +1,8 @@
 import dbConnection from "./DBconfig/Database";
 import app from "./app";
+import * as dotenv from "dotenv";
+
+dotenv.config();
 
 
 //This Handle uncaught Exception
@@ -8,12 +11,6 @@ process.on("uncaughtException", (err) =>{
     console.log(`Server shutting down for handling uncaught exception`)
 });
 
-//configurations
-if (process.env.NODE_ENV !== "PRODUCTION"){
-    require("dotenv").config({
-        path: "config/.env"
-    });
-}
 
 //connection to database
 dbConnection();

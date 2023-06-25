@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import asyncHandler from "express-async-handler";
-import TourEvent from "../models/tourActivity";
+import Activity from "../models/tourActivity";
 
 
 // @Desc Get All Activities
@@ -23,9 +23,9 @@ const getAll = asyncHandler(async(req:Request, res: Response, next: NextFunction
     
         const category = req.query.tourType ? {category: req.query.tourType} : {};
     
-        const count = await TourEvent.countDocuments({ ...keyword, ...tourLocation, ...category })
+        const count = await Activity.countDocuments({ ...keyword, ...tourLocation, ...category })
     
-        const activities = await TourEvent.find({ ...keyword, ...tourLocation, ...category }).limit(pageSize)
+        const activities = await Activity.find({ ...keyword, ...tourLocation, ...category }).limit(pageSize)
         .skip(pageSize * (page - 1));
         res.status(201).json({
             activities,
@@ -43,7 +43,7 @@ const getAll = asyncHandler(async(req:Request, res: Response, next: NextFunction
 // @Method GET
 const searchActivities = asyncHandler(async(req: Request, res: Response) => {
    try {
-    const filtered = await TourEvent.find({ $and: [ 
+    const filtered = await Activity.find({ $and: [ 
         { $or: [{name: req.query.keyword },{description: req.query.keyword}] }, 
         {tourLocation: req.query.tourLocation}, 
         {category: req.query.tourType} 
@@ -62,7 +62,7 @@ const searchActivities = asyncHandler(async(req: Request, res: Response) => {
 
 const getTopTourByReview = asyncHandler(async(req: Request, res: Response, next: NextFunction) => {
     try {
-        const topTour = await TourEvent.find().sort({rating:1}).limit(10);
+        const topTour = await Activity.find().sort({rating:1}).limit(10);
 
     res.status(200).json({
         success: true,

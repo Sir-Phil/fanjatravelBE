@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { ITourActivities } from "../interface/TourActivate";
 
-const TourEventSchema = new mongoose.Schema({
+const activitySchema = new mongoose.Schema({
     tourTitle: {
         type: String,
         required: true
@@ -37,9 +37,9 @@ const TourEventSchema = new mongoose.Schema({
     },
     reviews: [
         {
-            tourist: {
+            user: {
                 type: mongoose.Types.ObjectId,
-                ref: 'Tourist',
+                ref: 'User',
                 required: true,
             },
             name: {
@@ -53,9 +53,9 @@ const TourEventSchema = new mongoose.Schema({
         }
     ],
 
-    tourist: {
+    user: {
         type: mongoose.Types.ObjectId,
-        ref: "Tourist",
+        ref: "User",
         required: true,
     }
 },
@@ -63,6 +63,6 @@ const TourEventSchema = new mongoose.Schema({
     timestamps: true
 });
 
-const TourEvent = mongoose.model<ITourActivities>("TourEvent", TourEventSchema)
+const Activity = mongoose.model<ITourActivities>("Activity", activitySchema)
 
-export default TourEvent;
+export default Activity;

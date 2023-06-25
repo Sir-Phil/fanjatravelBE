@@ -3,11 +3,11 @@ import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken"
 
-export interface ITouristRequest extends Request {
+export interface IUserRequest extends Request {
     user?: any
 }
 
-export interface ITourist extends mongoose.Document {
+export interface IUser extends mongoose.Document {
     id: string,
     name: string,
     email: string,
@@ -20,7 +20,7 @@ export interface ITourist extends mongoose.Document {
     comparePassword(enteredPassword: string): Promise<Boolean>
 }
 
-const TouristSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
     name: {
         type: String,
         required: [true, "Please enter your name!"]
@@ -66,7 +66,7 @@ const TouristSchema = new mongoose.Schema({
 });
 
 //Hash password
-TouristSchema.pre<ITourist>("save", async function (next){
+userSchema.pre<IUser>("save", async function (next){
     if(!this.isModified("password")){
         next();
     }
@@ -74,19 +74,19 @@ TouristSchema.pre<ITourist>("save", async function (next){
 })
 
 //jwt token
-TouristSchema.methods.getJwtToken = function() {
-    const user = this as ITourist
+userSchema.methods.getJwtToken = function() {
+    const user = this as IUser
     return jwt.sign({id: user._id}, process.env.JWT_SECRET_KEY as string, {
         expiresIn: process.env.JWT_EXPIRES,
     });
 };
 
 //compare password
-TouristSchema.methods.comparePassword = async function(enteredPassword: string){
-    const user = this as ITourist
+userSchema.methods.comparePassword = async function(enteredPassword: string){
+    const user = this as IUser
     return await bcrypt.compareSync(enteredPassword, user.password);
 }
 
-const Tourist = mongoose.model<ITourist>("Tourist", TouristSchema);
+const User = mongoose.model<IUser>("User", userSchema);
 
-export default Tourist;
+export default User;

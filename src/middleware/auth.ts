@@ -3,7 +3,7 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import ErrorHandler from "../utils/ErrorHandler";
 import Tour, { ITourRequest } from "../models/tour";
 import { NextFunction, Request, Response } from "express";
-import Tourist, { ITouristRequest } from "../models/tourist";
+import Tourist, { ITouristRequest } from "../models/user";
 
 interface DecodedToken extends JwtPayload {
     id: string;

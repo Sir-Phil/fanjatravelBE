@@ -7,8 +7,8 @@ import path from "path";
 
 //imports for routes
 import userRoutes from "./routes/userRoutes";
-import tourActivities from "./routes/touractivitiesRoute";
 import categoryRoute from "./routes/categoryRoute";
+import tourActivitiesRoute from  "./routes/tourActivitiesRoute"
 
 const app = express();
 
@@ -23,10 +23,16 @@ app.use("/test", (_req, res) => {
 
 app.use(bodyParser.urlencoded({extended: true, limit: "50mb"}));
 
+// config
+if (process.env.NODE_ENV !== "PRODUCTION") {
+    require("dotenv").config({
+      path: "config/.env",
+    });
+  }
 
 //api endpoint routes
 app.use("/api/user", userRoutes);
-app.use("/api/activities", tourActivities);
+app.use("/api/activities", tourActivitiesRoute);
 app.use("/api/category", categoryRoute);
 
 

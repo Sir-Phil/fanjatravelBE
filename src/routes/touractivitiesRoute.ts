@@ -4,7 +4,7 @@ import { getAll, getTopTourByReview, searchActivities } from "../controllers/tou
 
 const router = express.Router();
 
-router.route("/TourActivities").get(getAll);
+router.route("/Activities").get(getAll);
 router.route("/SearchTour").get(searchActivities);
 router.route('/TopTours').get(getTopTourByReview)
 

@@ -2,13 +2,14 @@ import asyncHandler from "express-async-handler"
 import jwt, { JwtPayload } from "jsonwebtoken";
 import ErrorHandler from "../utils/ErrorHandler";
 import Tour, { ITourRequest } from "../models/tour";
-import { NextFunction, Request, Response } from "express";
-import Tourist, { ITouristRequest } from "../models/user";
+import { NextFunction, Response } from "express";
+import User, {IUserRequest } from "../models/user";
+
 
 interface DecodedToken extends JwtPayload {
     id: string;
 }
-const isAuthenticated = asyncHandler(async(req:ITouristRequest, res:Response, next:NextFunction) => {
+const isAuthenticated = asyncHandler(async(req:IUserRequest, res:Response, next:NextFunction) => {
     const {token} = req.cookies;
 
     if(!token){
@@ -16,7 +17,7 @@ const isAuthenticated = asyncHandler(async(req:ITouristRequest, res:Response, ne
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY as string) as DecodedToken
-    req.user = await Tourist.findById(decoded.id);
+    req.user = await User.findById(decoded.id);
 
     next();
 });

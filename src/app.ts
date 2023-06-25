@@ -8,7 +8,7 @@ import path from "path";
 //imports for routes
 import userRoutes from "./routes/userRoutes";
 import categoryRoute from "./routes/categoryRoute";
-import tourActivitiesRoute from  "./routes/tourActivitiesRoute"
+import tourActivitiesRoute from  "./routes/toursActivitiesRoute"
 
 const app = express();
 

@@ -23,6 +23,12 @@ app.use("/test", (_req, res) => {
 
 app.use(bodyParser.urlencoded({extended: true, limit: "50mb"}));
 
+// config
+if (process.env.NODE_ENV !== "PRODUCTION") {
+    require("dotenv").config({
+      path: "config/.env",
+    });
+  }
 
 //api endpoint routes
 app.use("/api/user", userRoutes);

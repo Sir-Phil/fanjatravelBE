@@ -105,7 +105,7 @@ const uploadGuardFiles = async(req : IUserRequest, res : Response, next :NextFun
          // Create a new user with the provided name, email, and role
     const user: IUser = new User({
         name,
-        email,
+        email,  
         password: "", // You can generate a random password or prompt the user to set a password later
         isAdmin: false,
         isTourGuide: true,
@@ -154,7 +154,7 @@ const uploadGuardFiles = async(req : IUserRequest, res : Response, next :NextFun
     if(!newUser){
         return next(new ErrorHandler("Invalid token", 400));
     }
-    const {name, email, password, avatar, phoneNumber, address } = newUser;
+    const {name, surname, email, password, avatar, phoneNumber, address } = newUser;
   
     let user = await User.findOne({email});
   
@@ -163,6 +163,7 @@ const uploadGuardFiles = async(req : IUserRequest, res : Response, next :NextFun
     }
     user = await User.create({
         name,
+        surname,
         email,
         avatar,
         password,

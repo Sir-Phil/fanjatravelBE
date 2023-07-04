@@ -1,22 +1,30 @@
 import mongoose from "mongoose";
 import { ITouristReview } from "./Review";
+import { IPlan } from "./activityPlan";
+import { IUser } from "./user";
+import { ICategory } from "./category";
 
 interface IImage {
  image: string,
 }
 
+
+
 export interface ITourActivities extends mongoose.Document {
-    tourTitle: string,
+    activityTitle: string,
+    activityType: string,
     period: string,
-    description: string,
-    pricePerPerson: Number,
-    tourLocation: string,
+    describeActivity: string,
+    activityDays : Date,
+    activityFee: Number,
+    discount: Number,
+    activityPlan: IPlan,
     rating?: Number,
     images: IImage[],
-    reviews?: ITouristReview[],
+    reviews?: IUser[],
     numberOfReviews: Number,
-    category: ''
-    tourist: mongoose.Types.ObjectId,
+    category: mongoose.Types.ObjectId | ICategory,
+    user: mongoose.Types.ObjectId | IUser
     createdAt: Date,
     updatedAt: Date,
 }

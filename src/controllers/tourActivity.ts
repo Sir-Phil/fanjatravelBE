@@ -1,84 +1,328 @@
 import { NextFunction, Request, Response } from "express";
 import asyncHandler from "express-async-handler";
-import Activity from "../models/tourActivity";
-
+import Activities from "../models/tourActivity";
+import Category from "../models/category";
+import { ITourActivities } from "../interface/TourActivate";
+import { IUserRequest } from "../interface/user";
 
 // @Desc Get All Activities
 // @Route /api/tour-activities
 // @Method GET
-const getAll = asyncHandler(async(req:Request, res: Response, next: NextFunction) => {
-    try {
-        const pageSize = 4;
-        const page = Number(req.query.pageNumber) || 1;
-    
-        const keyword = req.query.keyword ? {
-            $or: [
-                {name: { $regex: req.query.keyword, $options: "i" }},
-                {description: { $regex: req.query.keyword, $options: "i" }},
-            ]
-        }
-        : {};
-    
-        const tourLocation = req.query.tourLocation ? {tourLocation: req.query.tourLocation} : {};
-    
-        const category = req.query.tourType ? {category: req.query.tourType} : {};
-    
-        const count = await Activity.countDocuments({ ...keyword, ...tourLocation, ...category })
-    
-        const activities = await Activity.find({ ...keyword, ...tourLocation, ...category }).limit(pageSize)
-        .skip(pageSize * (page - 1));
-        res.status(201).json({
-            activities,
-            page,
-            pages: Math.ceil(count / pageSize),
-            count
-        });
-    } catch (error) {
-        res.status(500).json({ message: 'Internal Server Error' });
+const getAll = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const category = req.query.category; // Assuming the category parameter is passed in the request URL
+  
+    let query = {};
+
+    if (category) {
+      // Find the category document by name
+      const categoryItem = await Category.findOne({ title: category });
+
+      // If category is found, include it in the query
+      if (categoryItem) {
+        query = { category: categoryItem._id };
+      }
     }
+
+    const pageSize = 4;
+    const page = Number(req.query.pageNumber) || 1;
+
+    const count = await Activities.countDocuments(query);
+
+    const tourActivities = await Activities.find(query)
+      .populate("category", "title")
+      .limit(pageSize)
+      .skip(pageSize * (page - 1))
+      .exec();
+
+    res.status(200).json({
+      success: true,
+      activities: tourActivities,
+      page,
+      pages: Math.ceil(count / pageSize),
+      count,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      error: "Error retrieving tour activities by category",
+    });
+  }
 });
+
+
+const getActivityById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const activityId = req.params.id;
+
+    const activity = await Activities.findById(activityId);
+
+    if (!activity) {
+      res.status(404).json({
+        success: false,
+        message: "Activity not found",
+      });
+    } else {
+      res.status(200).json({
+        success: true,
+        data: activity,
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch activity",
+    });
+  }
+};
 
 // @Desc Search Tour activities
 // @Route /api/activities/search-tour/
 // @Method GET
-const searchActivities = asyncHandler(async(req: Request, res: Response) => {
-   try {
-    const filtered = await Activity.find({ $and: [ 
-        { $or: [{name: req.query.keyword },{description: req.query.keyword}] }, 
-        {tourLocation: req.query.tourLocation}, 
-        {category: req.query.tourType} 
-    ] });
-    res.status(201).json({
-        success: true,
-        data: filtered,
+const searchActivities = asyncHandler(async (req: Request, res: Response) => {
+  try {
+    const filtered = await Activities.find({
+      $and: [
+        {
+          $or: [
+            { name: req.query.keyword },
+            { description: req.query.keyword },
+          ],
+        },
+        { tourLocation: req.query.tourLocation },
+        { category: req.query.tourType },
+      ],
     });
-   } catch (error) {
+    res.status(201).json({
+      success: true,
+      data: filtered,
+    });
+  } catch (error) {
     res.status(500).json({
-        success: false,
-        error: 'Failed to search tourist activities',
-      });
-   }
-})
+      success: false,
+      error: "Failed to search tourist activities",
+    });
+  }
+});
 
-const getTopTourByReview = asyncHandler(async(req: Request, res: Response, next: NextFunction) => {
+const getTopTourByReview = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const topTour = await Activity.find().sort({rating:1}).limit(10);
+      const topTour = await Activities.find().sort({ rating: 1 }).limit(10);
 
-    res.status(200).json({
+      res.status(200).json({
         success: true,
         data: topTour,
-    });
+      });
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            error: 'failed to fetch to to by review',
-        });
+      res.status(500).json({
+        success: false,
+        error: "failed to fetch to to by review",
+      });
     }
-})
+  }
+);
 
+//@Desc Get Tour By Category
+// @access Public
+// const getTourActivitiesByCategory = asyncHandler(
+//   async (req: Request, res: Response, next: NextFunction) => {
+//     try {
+//       const category = req.query.category; // Assuming the category parameter is passed in the request URL
+
+//       let query = {};
+
+//       if (category) {
+//         // Find the category document by title
+//         const categoryItem = await Category.findOne({ title: category });
+
+//         // If category is found, include it in the query
+//         if (categoryItem) {
+//           query = { category: categoryItem._id };
+//         }
+//       }
+//       // Retrieve tour activities based on the query
+//       const tourActivities = await Activities.find(query)
+//         .populate("category", "title") // Populate the category field and select only the name
+//         .exec();
+
+//       res.status(200).json({
+//         success: true,
+//         data: tourActivities,
+//       });
+//     } catch (error: any) {
+//       res.status(500).json({
+//         success: false,
+//         error: "Error retrieving tour activities by category",
+//       });
+//     }
+//   }
+// );
+
+const createActivity = asyncHandler(
+  async (req: IUserRequest, res: Response, next: NextFunction) => {
+    try {
+      const {
+        activityTitle,
+        activityType,
+        period,
+        describeActivity,
+        activityDays,
+        activityFee,
+        discount,
+        activityPlan,
+        category,
+        images,
+      } = req.body;
+
+      const newTour: ITourActivities = await Activities.create({
+        activityTitle,
+        activityType,
+        period,
+        describeActivity,
+        activityDays,
+        activityFee,
+        discount,
+        activityPlan,
+        images,
+        category,
+        user: req.user._id,
+      });
+
+      res.status(201).json({
+        success: true,
+        data: newTour,
+      });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+);
+
+//@Desc get all tour-activities
+// @Route /api/user/tour-activities/
+// @Method GET
+//@access TourGuard
+
+const GetTour = asyncHandler(async (req: Request, res: Response) => {
+  try {
+    const tourActivities: ITourActivities[] = await Activities.find();
+
+    res.status(200).json({
+      success: true,
+      data: tourActivities,
+    });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+//@Desc get tour-activities by id
+// @Route /api/user/tour-activities/:id
+// @Method GET
+//@access TourGuard
+
+const getTourById = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const tourActivityId: string = req.params.id;
+      const tourActivity: ITourActivities | null = await Activities.findById(
+        tourActivityId
+      );
+
+      if (!tourActivity) {
+        res.status(404).json({
+          success: false,
+          message: "Tour activity not found",
+        });
+      }
+
+      res.status(200).json({
+        success: true,
+        data: tourActivity,
+      });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+);
+
+//@Desc Update tour-activities by id
+// @Route /api/user/tour-activities/:id
+// @Method PUT
+//@access TourGuard
+
+const updateActivity = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const tourActivityId: string = req.params.id;
+      const updateData: Partial<ITourActivities> = req.body;
+
+      const tourActivity: ITourActivities | null =
+        await Activities.findByIdAndUpdate(tourActivityId, updateData, {
+          new: true,
+        });
+
+      if (!tourActivity) {
+        res.status(404).json({
+          success: false,
+          message: "Tour activity not found",
+        });
+      }
+
+      res.status(200).json({
+        success: true,
+        data: tourActivity,
+      });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+);
+
+//@Desc Update tour-activities by id
+// @Route /api/user/tour-activities/:id
+// @Method PUT
+//@access TourGuard
+
+const deleteActivityByID = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const tourActivityId: string = req.params.id;
+
+      const tourActivity: ITourActivities | null =
+        await Activities.findByIdAndDelete(tourActivityId);
+
+      if (!tourActivity) {
+        res.status(404).json({
+          success: false,
+          message: "Tour activity not found",
+        });
+      }
+
+      res.status(200).json({
+        success: true,
+        message: "Deleted Successfully",
+      });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+);
 
 export {
-    getAll,
-    searchActivities,
-    getTopTourByReview
-}
+  getAll,
+  searchActivities,
+  getTopTourByReview,
+  // getTourActivitiesByCategory,
+  getActivityById,
+  GetTour,
+  getTourById,
+  createActivity,
+  updateActivity,
+  deleteActivityByID,
+};

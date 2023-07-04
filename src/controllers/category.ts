@@ -4,12 +4,10 @@ import Category from "../models/category";
 
 const createCategory = async (req: Request, res: Response) => {
   try {
-    const { name, title, place, imageUrl } = req.body;
+    const { title, imageUrl } = req.body;
 
     const category = new Category({
-      name,
       title,
-      place,
       imageUrl
     });
 

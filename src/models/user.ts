@@ -1,31 +1,18 @@
-import { Request } from "express";
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken"
+import { IUser } from "../interface/user";
 
-export interface IUserRequest extends Request {
-    user?: any
-}
-
-export interface IUser extends mongoose.Document {
-    id: string,
-    name: string,
-    email: string,
-    password: string
-    avatar: string,
-    phoneNumber: number,
-    role: string,
-    createdAt: Date,
-    updatedAt: Date,
-    comparePassword(enteredPassword: string): Promise<Boolean>
-}
 
 const userSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: [true, "Please enter your name!"]
+        // required: [true, "Please enter your name!"]
     },
-
+    surname: {
+        type: String,
+        // required: [true, "Please enter your name!"]
+    },
     email: {
         type: String,
         required: [true, "Please enter your email!"]
@@ -33,25 +20,32 @@ const userSchema = new mongoose.Schema({
 
     password: {
         type: String,
-        required: [true, "Please enter your password"],
-        minLength: [4, "Password Should be more 4 characters"],
-        select: false
+        // required: [true, "Please enter your password"],
+        // minLength: [4, "Password Should be more 4 characters"],
+        // select: false
     },
 
     phoneNumber: {
         type: Number
     },
 
-    role: {
-        type: String,
-        default: "user"
+    isAdmin: {
+        type: Boolean,
+        default: false,
+      },
+    isTourGuard: {
+        type: Boolean,
+        default: false,
     },
 
     avatar: {
         type: String,
-        required: true
+        // required: true
     },
-
+    address: {
+        type: String,
+        
+      },
     createdAt: {
         type: Date,
         default: Date.now(),
@@ -70,7 +64,14 @@ userSchema.pre<IUser>("save", async function (next){
     if(!this.isModified("password")){
         next();
     }
-    this.password = await bcrypt.hash(this.password, 10);
+    try {
+        const hashedPassword = await bcrypt.hash(this.password, 10);
+        this.password = hashedPassword;
+
+        next();
+    } catch (error : any) {
+        next(error);
+    }
 })
 
 //jwt token

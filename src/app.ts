@@ -6,9 +6,11 @@ import bodyParser from "body-parser";
 import path from "path";
 
 //imports for routes
+// import adminRoute from "./routes/adminRoute";
 import userRoutes from "./routes/userRoutes";
 import categoryRoute from "./routes/categoryRoute";
-import tourActivitiesRoute from  "./routes/toursActivitiesRoute"
+import tourActivitiesRoute from  "./routes/toursActivitiesRoute";
+// import tourRoute from "./routes/tourRoute";
 
 const app = express();
 
@@ -33,9 +35,11 @@ if (process.env.NODE_ENV !== "PRODUCTION") {
   }
 
 //api endpoint routes
+// app.use("/api/Admin", adminRoute)
 app.use("/api/user", userRoutes);
 app.use("/api/activities", tourActivitiesRoute);
 app.use("/api/category", categoryRoute);
+// app.use("/api/tours", tourRoute);
 
 
 //for ErrorHandling

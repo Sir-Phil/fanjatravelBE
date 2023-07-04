@@ -5,14 +5,12 @@ import { ICategory } from "../interface/category";
 const categorySchema = new mongoose.Schema({
     title: {
         type: String,
-        required: true,
     },
 
     imageUrl: {
         type: String,
-        required: true
+       
     }
-
 },
 {
     timestamps: true

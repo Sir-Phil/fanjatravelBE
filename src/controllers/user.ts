@@ -44,7 +44,7 @@ const inviteGuard = asyncHandler  (async (req: IUserRequest, res: Response, next
             subject: "Invitation to join as a Tour Guide",
             message: `<p>Hello,</p>
                         <p>You have been invited to join as a Tour Guide. Please click on the following link to complete your registration:</p>
-                        <p><a href="${process.env.SITE_URL}/tour-guide-registration/${user._id}">Click here to activate your account</a></p>
+                        <p><a href="${process.env.SITE_URL}/api/user/tour-guide-registration/${user._id}">Click here to activate your account</a></p>
                         <p>Best regards,</p>
                         <p>The Admin Team</p>`,
         // email,
@@ -67,75 +67,75 @@ const inviteGuard = asyncHandler  (async (req: IUserRequest, res: Response, next
 // @Method POST
 
 // const uploadFile = upload.single('file');
-const uploadGuardFiles = async(req : IUserRequest, res : Response, next :NextFunction) => {
-    try {
-        const { name, email } = req.body
+// const uploadGuardFiles = async(req : IUserRequest, res : Response, next :NextFunction) => {
+//     try {
+//         const { name, email } = req.body
         
-        const adminUser = req.user;
-        if (!adminUser || !adminUser.isAdmin) {
-        return next(new ErrorHandler("Only admins can send tour guide invitations", 403));
-        }
+//         const adminUser = req.user;
+//         if (!adminUser || !adminUser.isAdmin) {
+//         return next(new ErrorHandler("Only admins can send tour guide invitations", 403));
+//         }
 
         
-        const userEmail = await User.findOne({email});
+//         const userEmail = await User.findOne({email});
   
-        if(userEmail) {
-           if(req.file){
-            const filename = req.file.filename;
-            const filePath = `uploads/${filename}`;
-            fs.unlink(filePath, (err) => {
-                if(err){
-                    console.log(err);
-                    res.status(500).json({message: "Error deleting file"});
-                }
-            });
+//         if(userEmail) {
+//            if(req.file){
+//             const filename = req.file.filename;
+//             const filePath = `uploads/${filename}`;
+//             fs.unlink(filePath, (err) => {
+//                 if(err){
+//                     console.log(err);
+//                     res.status(500).json({message: "Error deleting file"});
+//                 }
+//             });
   
-            return next(new ErrorHandler("User already exists", 400))
-           }
+//             return next(new ErrorHandler("User already exists", 400))
+//            }
            
-        }
+//         }
   
-        if (!req.file) {
-            return next(new ErrorHandler('No file provided', 400));
-          }
+//         if (!req.file) {
+//             return next(new ErrorHandler('No file provided', 400));
+//           }
           
-        const filename = req.file.filename;
-        const fileUrl = path.join(filename)
+//         const filename = req.file.filename;
+//         const fileUrl = path.join(filename)
   
-         // Create a new user with the provided name, email, and role
-    const user: IUser = new User({
-        name,
-        email,  
-        password: "", // You can generate a random password or prompt the user to set a password later
-        isAdmin: false,
-        isTourGuide: true,
-        avatar: "", // Set the avatar as needed
-      });
+//          // Create a new user with the provided name, email, and role
+//     const user: IUser = new User({
+//         name,
+//         email,  
+//         password: "", // You can generate a random password or prompt the user to set a password later
+//         isAdmin: false,
+//         isTourGuide: true,
+//         avatar: "", // Set the avatar as needed
+//       });
   
-      await user.save();
+//       await user.save();
         
-        const activationToken = createActivationToken(user);
+//         const activationToken = createActivationToken(user);
   
-        const activationUrl = `http://localhost:10623/${activationToken}`
+//         const activationUrl = `http://localhost:10623/${activationToken}`
         
-        try {
-            await sendMail({
-                email: user.email,
-                subject: "Activate your touring account",
-                message: `Howdy ${user.name}, please click on the link to activate your account: ${activationUrl}`,
-            });
-            res.status(201).json({
-                success: true,
-                message: `please check your email:- ${user.email} to activate your account`,
-            })
-        } catch (error: any) {
-                return next(new ErrorHandler(error.message, 500))
-        }
-    } catch (error: any) {
-            return next(new ErrorHandler(error.message, 400))
-        }
+//         try {
+//             await sendMail({
+//                 email: user.email,
+//                 subject: "Activate your touring account",
+//                 message: `Howdy ${user.name}, please click on the link to activate your account: ${activationUrl}`,
+//             });
+//             res.status(201).json({
+//                 success: true,
+//                 message: `please check your email:- ${user.email} to activate your account`,
+//             })
+//         } catch (error: any) {
+//                 return next(new ErrorHandler(error.message, 500))
+//         }
+//     } catch (error: any) {
+//             return next(new ErrorHandler(error.message, 400))
+//         }
     
-  }
+//   }
   
   // @Desc activate Guard
   // @Route /api/users/activation
@@ -169,6 +169,7 @@ const uploadGuardFiles = async(req : IUserRequest, res : Response, next :NextFun
         password,
         phoneNumber,
         address,
+        isTourGuard: true,
         
     });
     sendToken(user, 201, res)
@@ -272,7 +273,7 @@ const getGuardInfo = asyncHandler(async(req: Request, res: Response, next: NextF
 
 const updateGuardInfo = asyncHandler(async(req: IUserRequest, res: Response, next: NextFunction) => {
     try {
-        const {email, phoneNumber, name, address} = req.body;
+        const {email, surname, phoneNumber, name, address} = req.body;
     
         const user = await User.findOne(req.user._id);
     
@@ -281,6 +282,7 @@ const updateGuardInfo = asyncHandler(async(req: IUserRequest, res: Response, nex
         }
     
         user.name = name;
+        user.surname = surname,
         user.email = email;
         user.phoneNumber = phoneNumber;
         user.address = address;
@@ -382,7 +384,7 @@ const adminDeleteTourGuard = asyncHandler(async(req:Request, res:Response, next:
 // const uploadFile = upload.single('file');
 const uploadFiles = async(req : Request, res : Response, next :NextFunction) => {
     try {
-        const {name, email, password, address, phoneNumber } = req.body
+        const {name, email, password, address, phoneNumber, surname } = req.body
 
         
         const userEmail = await User.findOne({email});
@@ -412,6 +414,7 @@ const uploadFiles = async(req : Request, res : Response, next :NextFunction) => 
 
         const user = {
             name: name,
+            surname: surname,
             email: email,
             password: password,
             // avatar: fileUrl,
@@ -421,13 +424,13 @@ const uploadFiles = async(req : Request, res : Response, next :NextFunction) => 
         
         const activationToken = createActivationToken(user);
 
-        const activationUrl = `http://localhost:10623/${activationToken}`
+        const activationUrl = `${process.env.SITE_URL}/api/user/activation${activationToken}`
         
         try {
             await sendMail({
                 email: user.email,
-                subject: "Activate your touring account",
-                message: `Howdy ${user.name}, please click on the link to activate your account: ${activationUrl}`,
+                subject: "Activate your Tour Account",
+                message: `<p>Howdy ${user.name}, please click on the link to activate your account: <a href="${activationUrl}">Activate here</a></p>`,
             });
             res.status(201).json({
                 success: true,
@@ -480,7 +483,6 @@ const activateUser = asyncHandler (async (req: Request, res: Response, next: Nex
         password,
         address,
         phoneNumber,
-        isAdmin: true
     });
     sendToken(user, 201, res)
  } catch (error:any) {  
@@ -719,7 +721,7 @@ const deleteUser = asyncHandler(async(req:Request, res:Response, next: NextFunct
 
 export {
     inviteGuard,
-    uploadGuardFiles,
+    // uploadGuardFiles,
     activateTourGuard,
     loginTourGuard,
     getGuard,

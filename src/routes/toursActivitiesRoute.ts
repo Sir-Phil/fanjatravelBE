@@ -7,10 +7,9 @@ const router = express.Router();
 
 router.get("/", getAll);
 router.get("/:id", getActivityById);
-// router.get("/tour-activities", getTourActivitiesByCategory);
 router.get("/search-tour", searchActivities);
 router.get("/top-tour", getTopTourByReview);
-router.post("/create-activity", isAuthenticated, isAdmin, createActivity)
+router.post("/create-activity", isAuthenticated, isTourGuard, createActivity)
 
 
 export default router;

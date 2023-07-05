@@ -20,7 +20,7 @@ import {
   updateGuardInfo,
   updateUserInfo,
   uploadFiles,
-  uploadGuardFiles,
+  // uploadGuardFiles,
 } from "../controllers/user";
 import upload from "../utils/multer";
 import {
@@ -51,7 +51,7 @@ router.get("/admin-all-tour-guard", isAuthenticated, isAdmin, adminGetTourGuard)
 router.delete("/delete-tour-guard/:id", isAuthenticated, isAdmin, adminDeleteTourGuard);
 
 // Routes accessible only to tour guards
-router.post("/create-guard", upload.single("file"), uploadGuardFiles);
+// router.post("/create-guard", upload.single("file"), uploadGuardFiles);
 router.post("/activate-guard", activateTourGuard);
 router.get("/get-guard", isTourGuard, getGuard);
 router.get("/get-tour-info/:id", getGuardInfo);

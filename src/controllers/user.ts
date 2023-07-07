@@ -37,8 +37,7 @@ const inviteGuard = asyncHandler  (async (req: IUserRequest, res: Response, next
   
       await user.save();
 
-      // Send an invitation email to the tour guide
-    //   const invitationLink = `${process.env.SITE_URL}/tour-guide-registration/${activationToken}`; // Update with your app's registration URL
+      //Email sending function
       await sendMail({
             email: user.email,
             subject: "Invitation to join as a Tour Guide",
@@ -47,9 +46,6 @@ const inviteGuard = asyncHandler  (async (req: IUserRequest, res: Response, next
                         <p><a href="${process.env.SITE_URL}/api/user/tour-guide-registration/${user._id}">Click here to activate your account</a></p>
                         <p>Best regards,</p>
                         <p>The Admin Team</p>`,
-        // email,
-        // subject: "Invitation to join as a Tour Guide",
-        // message: `Hello ${name},\n\nYou have been invited to join as a Tour Guide. Please click on the following link to complete your registration:\n\n${invitationLink}\n\nBest regards,\nThe Admin Team`,
       });
   
       res.status(201).json({
@@ -60,82 +56,6 @@ const inviteGuard = asyncHandler  (async (req: IUserRequest, res: Response, next
       return next(new ErrorHandler(error.message, 500));
     }
 });
-  
-
-// @Desc Create user
-// @Route /api/users/create-user
-// @Method POST
-
-// const uploadFile = upload.single('file');
-// const uploadGuardFiles = async(req : IUserRequest, res : Response, next :NextFunction) => {
-//     try {
-//         const { name, email } = req.body
-        
-//         const adminUser = req.user;
-//         if (!adminUser || !adminUser.isAdmin) {
-//         return next(new ErrorHandler("Only admins can send tour guide invitations", 403));
-//         }
-
-        
-//         const userEmail = await User.findOne({email});
-  
-//         if(userEmail) {
-//            if(req.file){
-//             const filename = req.file.filename;
-//             const filePath = `uploads/${filename}`;
-//             fs.unlink(filePath, (err) => {
-//                 if(err){
-//                     console.log(err);
-//                     res.status(500).json({message: "Error deleting file"});
-//                 }
-//             });
-  
-//             return next(new ErrorHandler("User already exists", 400))
-//            }
-           
-//         }
-  
-//         if (!req.file) {
-//             return next(new ErrorHandler('No file provided', 400));
-//           }
-          
-//         const filename = req.file.filename;
-//         const fileUrl = path.join(filename)
-  
-//          // Create a new user with the provided name, email, and role
-//     const user: IUser = new User({
-//         name,
-//         email,  
-//         password: "", // You can generate a random password or prompt the user to set a password later
-//         isAdmin: false,
-//         isTourGuide: true,
-//         avatar: "", // Set the avatar as needed
-//       });
-  
-//       await user.save();
-        
-//         const activationToken = createActivationToken(user);
-  
-//         const activationUrl = `http://localhost:10623/${activationToken}`
-        
-//         try {
-//             await sendMail({
-//                 email: user.email,
-//                 subject: "Activate your touring account",
-//                 message: `Howdy ${user.name}, please click on the link to activate your account: ${activationUrl}`,
-//             });
-//             res.status(201).json({
-//                 success: true,
-//                 message: `please check your email:- ${user.email} to activate your account`,
-//             })
-//         } catch (error: any) {
-//                 return next(new ErrorHandler(error.message, 500))
-//         }
-//     } catch (error: any) {
-//             return next(new ErrorHandler(error.message, 400))
-//         }
-    
-//   }
   
   // @Desc activate Guard
   // @Route /api/users/activation

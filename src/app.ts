@@ -6,7 +6,7 @@ import bodyParser from "body-parser";
 import path from "path";
 
 //imports for routes
-// import adminRoute from "./routes/adminRoute";
+import tempbookingRoute from "./routes/tembookingRoute";
 import userRoutes from "./routes/userRoutes";
 import categoryRoute from "./routes/categoryRoute";
 import tourActivitiesRoute from  "./routes/toursActivitiesRoute";
@@ -35,7 +35,7 @@ if (process.env.NODE_ENV !== "PRODUCTION") {
   }
 
 //api endpoint routes
-// app.use("/api/Admin", adminRoute)
+app.use("/api/booking", tempbookingRoute)
 app.use("/api/user", userRoutes);
 app.use("/api/activities", tourActivitiesRoute);
 app.use("/api/category", categoryRoute);

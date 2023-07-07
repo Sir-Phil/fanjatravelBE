@@ -6,7 +6,7 @@ import { isAdmin, isAuthenticated, isTourGuard } from "../middleware/auth";
 const router = express.Router();
 
 router.get("/", getAll);
-router.get("/:id", getActivityById);
+router.get("/single/:id", getActivityById);
 router.get("/search-tour", searchActivities);
 router.get("/top-tour", getTopTourByReview);
 router.post("/create-activity", isAuthenticated, isTourGuard, createActivity)

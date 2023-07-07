@@ -10,7 +10,6 @@ import tempbookingRoute from "./routes/tembookingRoute";
 import userRoutes from "./routes/userRoutes";
 import categoryRoute from "./routes/categoryRoute";
 import tourActivitiesRoute from  "./routes/toursActivitiesRoute";
-// import tourRoute from "./routes/tourRoute";
 
 const app = express();
 
@@ -39,7 +38,6 @@ app.use("/api/booking", tempbookingRoute)
 app.use("/api/user", userRoutes);
 app.use("/api/activities", tourActivitiesRoute);
 app.use("/api/category", categoryRoute);
-// app.use("/api/tours", tourRoute);
 
 
 //for ErrorHandling

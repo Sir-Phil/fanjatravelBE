@@ -2,6 +2,8 @@ import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken"
 import { IUser } from "../interface/user";
+import { LanguageOptions } from "../interface/languageOption";
+import { Gender } from "../interface/genderOption";
 
 
 const userSchema = new mongoose.Schema({
@@ -11,6 +13,22 @@ const userSchema = new mongoose.Schema({
     },
     surname: {
         type: String,
+        // required: [true, "Please enter your name!"]
+    },
+    age: {
+        type: String,
+        // required: [true, "Please enter your name!"]
+    },
+    gender: {
+        type: String,
+        enum: Object.values(Gender)
+    },
+    language: { 
+        type: [{ type: String, enum: LanguageOptions }],
+         required: true },
+
+    languages: {
+        type: [String],
         // required: [true, "Please enter your name!"]
     },
     email: {

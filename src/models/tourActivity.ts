@@ -1,5 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 import { ITourActivities } from "../interface/TourActivate";
+import { activityOptions } from "../interface/activityOption";
+import { daysOptions } from "../interface/daysOption";
 
 
 const TourActivitiesSchema: Schema<ITourActivities> = new Schema({
@@ -7,9 +9,18 @@ const TourActivitiesSchema: Schema<ITourActivities> = new Schema({
     type: String,
     required: [true, "Please enter the activity title!"],
   },
+  activityLocation: {
+    type: String,
+    required: [true, "Please enter the activity location!"],
+  },
   activityType: {
     type: String,
+    enum: Object.values(activityOptions),
     required: [true, "Please enter the activity type!"],
+  },
+  dayOfActivity: {
+    type: String,
+    enum: Object.values(daysOptions),
   },
   period: {
     type: String,
@@ -31,7 +42,7 @@ const TourActivitiesSchema: Schema<ITourActivities> = new Schema({
     type: Number,
     default: 0,
   },
-  activityPlan: {
+  activityPlan: [{
     describeLocation:{
       type: String,
       required: [true, "Please provide the activity Location"]
@@ -44,7 +55,8 @@ const TourActivitiesSchema: Schema<ITourActivities> = new Schema({
       type: String,
       required: [true, "Please provide the activity plan description"]
   },
-  },
+}
+],
 
   rating: {
     type: Number,

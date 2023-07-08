@@ -11,20 +11,22 @@ interface IImage {
 
 
 export interface ITourActivities extends mongoose.Document {
-    activityTitle: string,
-    activityType: string,
-    period: string,
-    describeActivity: string,
-    activityDays : Date,
-    activityFee: Number,
-    discount: Number,
-    activityPlan: IPlan,
-    rating?: Number,
-    images: IImage[],
-    reviews?: IUser[],
-    numberOfReviews: Number,
-    category: mongoose.Types.ObjectId | ICategory,
-    user: mongoose.Types.ObjectId | IUser
-    createdAt: Date,
-    updatedAt: Date,
+    activityTitle: string;
+    activityLocation: string;
+    activityType: activityOptions;
+    dayOfActivity: daysOption;
+    period: string;
+    describeActivity: string;
+    activityDays : Date;
+    activityFee: Number;
+    discount: Number;
+    activityPlan: IPlan;
+    rating?: Number;
+    images: IImage[];
+    reviews?: IUser[];
+    numberOfReviews: Number;
+    category: mongoose.Types.ObjectId | ICategory;
+    user: mongoose.Types.ObjectId | IUser;
+    createdAt: Date;
+    updatedAt: Date;
 }

@@ -4,6 +4,7 @@ import Activities from "../models/tourActivity";
 import Category from "../models/category";
 import { ITourActivities } from "../interface/TourActivate";
 import { IUserRequest } from "../interface/user";
+import { IPlan } from "../interface/activityPlan";
 
 // @Desc Get All Activities
 // @Route /api/tour-activities
@@ -93,8 +94,8 @@ const searchActivities = asyncHandler(async (req: Request, res: Response) => {
             { description: req.query.keyword },
           ],
         },
-        { tourLocation: req.query.tourLocation },
-        { category: req.query.tourType },
+        { activityType: req.query.activityType },
+        { category: req.query.title },
       ],
     });
     res.status(201).json({
@@ -168,8 +169,10 @@ const createActivity = asyncHandler(
     try {
       const {
         activityTitle,
+        activityLocation,
         activityType,
         period,
+        dayOfActivity,
         describeActivity,
         activityDays,
         activityFee,
@@ -181,13 +184,20 @@ const createActivity = asyncHandler(
 
       const newTour: ITourActivities = await Activities.create({
         activityTitle,
+        activityLocation,
         activityType,
         period,
+        dayOfActivity,
         describeActivity,
         activityDays,
         activityFee,
         discount,
-        activityPlan,
+        activityPlan: activityPlan.map((plan : IPlan) => ({
+          _id: null,
+          describeLocation: plan.describeLocation,
+          planTitle: plan.planTitle,
+          planTitleDesc: plan.planTitleDesc,
+        })),
         images,
         category,
         user: req.user._id,

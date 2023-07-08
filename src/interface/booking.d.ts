@@ -3,7 +3,8 @@ import { ITemporalUser } from "./t-user";
 import { ITourActivities } from "./TourActivate";
 
 export interface IBookingTour extends mongoose.Document{
-    activity: mongoose.Types.ObjectId | ITourActivities
+    activity: string,
+    user: string
     
 }
 

@@ -9,7 +9,7 @@ import sendMail from "../utils/sendMail";
 // POST /api/users/invitations/tour-guard
 const temUserBooking = asyncHandler  (async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { name, surname, email } = req.body;
+      const { activity, name, surname, email } = req.body;
 
       // Check if the email is already registered
       const existingUser = await Tuser.findOne({ email });
@@ -20,6 +20,7 @@ const temUserBooking = asyncHandler  (async (req: Request, res: Response, next: 
   
       // Create a new user with the provided name, email, and role
       const user  = new Tuser({
+        activity,
         email,
         name,
         surname
@@ -40,13 +41,32 @@ const temUserBooking = asyncHandler  (async (req: Request, res: Response, next: 
   
       res.status(201).json({
             success: true,
-            message: `please check your email:- ${user.email} to activate your account`,
+            message: `please check your email:- ${user.email} for more information`,
       });
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 500));
     }
 });
+
+
+const getFakeBooking = async (req: Request, res: Response) => {
+  try {
+    const bookings = await Tuser.find();
+
+    res.status(200).json({
+      success: true,
+      data: bookings,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch categories",
+    });
+  }
+};
+
   
 export {
-  temUserBooking
+  temUserBooking,
+  getFakeBooking
 }

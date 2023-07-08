@@ -34,8 +34,9 @@ if (process.env.NODE_ENV !== "PRODUCTION") {
   }
 
 //api endpoint routes
-app.use("/api/booking", tempbookingRoute)
-app.use("/api/user", userRoutes);
+app.use("", tempbookingRoute)
+// app.use("/api/user", userRoutes);
+app.use("", userRoutes);
 app.use("/api/activities", tourActivitiesRoute);
 app.use("/api/category", categoryRoute);
 

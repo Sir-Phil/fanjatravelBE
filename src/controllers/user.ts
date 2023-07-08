@@ -43,14 +43,14 @@ const inviteGuard = asyncHandler  (async (req: IUserRequest, res: Response, next
             subject: "Invitation to join as a Tour Guide",
             message: `<p>Hello,</p>
                         <p>You have been invited to join as a Tour Guide. Please click on the following link to complete your registration:</p>
-                        <p><a href="${process.env.SITE_URL}/api/user/tour-guide-registration/${user._id}">Click here to activate your account</a></p>
+                        <p><a href="${process.env.SITE_URL}/tour-guide-registration/${user._id}">Click here to activate your account</a></p>
                         <p>Best regards,</p>
                         <p>The Admin Team</p>`,
       });
   
       res.status(201).json({
             success: true,
-            message: `please check your email:- ${user.email} to activate your account`,
+            message: `please check your email:- ${user.email} to continue account registration`,
       });
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 500));
@@ -74,7 +74,7 @@ const inviteGuard = asyncHandler  (async (req: IUserRequest, res: Response, next
     if(!newUser){
         return next(new ErrorHandler("Invalid token", 400));
     }
-    const {name, surname, email, password, avatar, phoneNumber, address } = newUser;
+    const {name, surname, email, password, avatar, phoneNumber, address, age, gender, language } = newUser;
   
     let user = await User.findOne({email});
   
@@ -85,11 +85,15 @@ const inviteGuard = asyncHandler  (async (req: IUserRequest, res: Response, next
         name,
         surname,
         email,
+        age,
+        gender,
+        language,
         avatar,
         password,
         phoneNumber,
         address,
         isTourGuard: true,
+        isAdmin: false
         
     });
     sendToken(user, 201, res)
@@ -193,7 +197,7 @@ const getGuardInfo = asyncHandler(async(req: Request, res: Response, next: NextF
 
 const updateGuardInfo = asyncHandler(async(req: IUserRequest, res: Response, next: NextFunction) => {
     try {
-        const {email, surname, phoneNumber, name, address} = req.body;
+        const {email, surname, phoneNumber, name, address, age, gender, language} = req.body;
     
         const user = await User.findOne(req.user._id);
     
@@ -206,6 +210,9 @@ const updateGuardInfo = asyncHandler(async(req: IUserRequest, res: Response, nex
         user.email = email;
         user.phoneNumber = phoneNumber;
         user.address = address;
+        user.age = age;
+        user.gender = gender;
+        user.language = language;
 
         await user.save();
     

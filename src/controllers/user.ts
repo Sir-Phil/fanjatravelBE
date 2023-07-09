@@ -93,7 +93,6 @@ const inviteGuard = asyncHandler  (async (req: IUserRequest, res: Response, next
         phoneNumber,
         address,
         isTourGuard: true,
-        isAdmin: false
         
     });
     sendToken(user, 201, res)
@@ -351,7 +350,7 @@ const uploadFiles = async(req : Request, res : Response, next :NextFunction) => 
         
         const activationToken = createActivationToken(user);
 
-        const activationUrl = `${process.env.SITE_URL}/api/user/activation${activationToken}`
+        const activationUrl = `${process.env.SITE_URL}/activation${activationToken}`
         
         try {
             await sendMail({
@@ -646,6 +645,27 @@ const deleteUser = asyncHandler(async(req:Request, res:Response, next: NextFunct
     }
 })
 
+
+const grantAdmin = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    const { id } = req.params;
+  
+    try {
+      const user: IUser | null = await User.findById(id);
+  
+      if (!user) {
+        return next(new ErrorHandler("User not found", 404));
+      }
+  
+      user.isAdmin = true;
+      await user.save();
+  
+      res.status(200).json({ success: true, message: "User granted admin privileges" });
+    } catch (error) {
+      return next(new ErrorHandler("Internal server error", 500));
+    }
+  });
+  
+
 export {
     inviteGuard,
     // uploadGuardFiles,
@@ -669,5 +689,6 @@ export {
     getUserInfo,
     adminGetUser,
     adminGetTourGuard,
-    adminDeleteTourGuard
+    adminDeleteTourGuard,
+    grantAdmin
 }

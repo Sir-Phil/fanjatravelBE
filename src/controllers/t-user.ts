@@ -11,14 +11,13 @@ const temUserBooking = asyncHandler  (async (req: Request, res: Response, next: 
     try {
       const { activity, name, surname, email } = req.body;
 
-      // Check if the email is already registered
       const existingUser = await Tuser.findOne({ email });
 
       if (existingUser) {
         return next(new ErrorHandler("Email is already registered", 400));
       }
   
-      // Create a new user with the provided name, email, and role
+      // Create a new user with the provided name, email, a
       const user  = new Tuser({
         activity,
         email,

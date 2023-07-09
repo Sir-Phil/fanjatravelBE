@@ -11,6 +11,7 @@ import {
   getGuardInfo,
   getUser,
   getUserInfo,
+  grantAdmin,
   inviteGuard,
   logOutGard,
   logOutUser,
@@ -58,6 +59,9 @@ router.get("/get-tour-info/:id", getGuardInfo);
 router.put("/update-guard-avatar", isTourGuard, upload.single("image"), updateGuardAvatar);
 router.put("/tour-guide-registration/:id", isTourGuard, updateGuardInfo);
 router.get("/logout-guard", logOutGard);
+
+// Routes to grant a user Admin
+router.post("/users/:id/grantAdmin", grantAdmin);
 
 // Routes accessible only to admin (including tour guards)
 

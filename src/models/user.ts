@@ -26,11 +26,12 @@ const userSchema = new mongoose.Schema({
     language: { 
         type: [{ type: String, enum: LanguageOptions }],
          required: true },
+
     email: {
         type: String,
         required: [true, "Please enter your email!"]
     },
-
+    
     password: {
         type: String,
         // required: [true, "Please enter your password"],

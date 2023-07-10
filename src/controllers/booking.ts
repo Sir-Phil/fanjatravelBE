@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response, } from "express";
 import asyncHandler from "express-async-handler";
 import ErrorHandler from "../utils/ErrorHandler";
-import Tuser from "../models/t-user";
 import sendMail from "../utils/sendMail";
+import FakeBooking from "../models/fake-booking";
 
 
 
@@ -11,25 +11,25 @@ const temUserBooking = asyncHandler  (async (req: Request, res: Response, next: 
     try {
       const { activity, name, surname, email } = req.body;
 
-      const existingUser = await Tuser.findOne({ email });
+      const existingUser = await FakeBooking.findOne({ email });
 
       if (existingUser) {
         return next(new ErrorHandler("Email is already registered", 400));
       }
   
       // Create a new user with the provided name, email, a
-      const user  = new Tuser({
+      const booking  = new FakeBooking({
         activity,
         email,
         name,
         surname
       });
   
-      await user.save();
+      await booking.save();
 
 // Email function for the user wait-list
       await sendMail({
-            email: user.email,
+            email: booking.email,
             subject: "We Appreciate your interest to join this Tour Experience",
             message: `<p>Hello,${name}</p>
                         <p>Thank you for showing interest to be part of the Tour Experience. Please watch out for this space for more vital information and Experience updates:</p>
@@ -40,7 +40,7 @@ const temUserBooking = asyncHandler  (async (req: Request, res: Response, next: 
   
       res.status(201).json({
             success: true,
-            message: `please check your email:- ${user.email} for more information`,
+            message: `please check your email:- ${booking.email} for more information`,
       });
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 500));
@@ -50,7 +50,7 @@ const temUserBooking = asyncHandler  (async (req: Request, res: Response, next: 
 
 const getFakeBooking = async (req: Request, res: Response) => {
   try {
-    const bookings = await Tuser.find();
+    const bookings = await FakeBooking.find();
 
     res.status(200).json({
       success: true,

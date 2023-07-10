@@ -395,7 +395,7 @@ const activateUser = asyncHandler (async (req: Request, res: Response, next: Nex
     if(!newUser){
         return next(new ErrorHandler("Invalid token", 400));
     }
-    const {name, email, password, avatar, address, phoneNumber } = newUser;
+    const {name, surname, language, age, gender, email, password, avatar, address, phoneNumber } = newUser;
 
     let user = await User.findOne({email});
 
@@ -404,11 +404,15 @@ const activateUser = asyncHandler (async (req: Request, res: Response, next: Nex
     }
     user = await User.create({
         name,
+        surname,
         email,
         avatar,
         password,
         address,
         phoneNumber,
+        language,
+        age,
+        gender,
     });
     sendToken(user, 201, res)
  } catch (error:any) {  

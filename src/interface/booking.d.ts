@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { ITemporalUser } from "./t-user";
+import { ITemporalUser } from "./fake-booking";
 import { ITourActivities } from "./TourActivate";
 
 export interface IBookingTour extends mongoose.Document{

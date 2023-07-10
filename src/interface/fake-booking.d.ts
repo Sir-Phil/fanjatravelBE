@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-export interface ITemporalUser extends mongoose.Document {
+export interface IFakeBooking extends mongoose.Document {
     activity: string,
     name: string,
     surname: string,

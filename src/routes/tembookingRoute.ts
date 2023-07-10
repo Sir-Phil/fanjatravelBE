@@ -1,5 +1,5 @@
 import express from "express";
-import { getFakeBooking, temUserBooking } from "../controllers/t-user";
+import { getFakeBooking, temUserBooking } from "../controllers/booking";
 
 const router = express.Router();
 

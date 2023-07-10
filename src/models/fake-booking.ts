@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
-import { ITemporalUser } from "../interface/t-user";
+import { IFakeBooking } from "../interface/fake-booking";
 
-const tUserSchema = new mongoose.Schema({
+const fakeBookingSchema = new mongoose.Schema({
     activity: {
         type: mongoose.Types.ObjectId,
         required: true,
@@ -23,6 +23,6 @@ const tUserSchema = new mongoose.Schema({
     timestamps: true
 })
 
-const Tuser = mongoose.model<ITemporalUser>("Tuser", tUserSchema)
+const FakeBooking = mongoose.model<IFakeBooking>("FakeBooking", fakeBookingSchema)
 
-export default Tuser;
+export default FakeBooking;

@@ -25,7 +25,8 @@ const userSchema = new mongoose.Schema({
     },
     language: { 
         type: [{ type: String, enum: LanguageOptions }],
-         required: true },
+        //  required: true
+         },
 
     email: {
         type: String,

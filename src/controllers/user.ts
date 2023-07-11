@@ -16,7 +16,7 @@ import { isAdmin } from "../middleware/auth";
 // POST /api/users/invitations/tour-guard
 const inviteGuard = asyncHandler  (async (req: IUserRequest, res: Response, next: NextFunction) => {
     try {
-      const { email, name } = req.body;
+      const { email } = req.body;
 
       const adminUser = req.user; // Assuming you have implemented authentication middleware to extract the logged-in user
         if (!adminUser || !adminUser.isAdmin) {
@@ -33,6 +33,7 @@ const inviteGuard = asyncHandler  (async (req: IUserRequest, res: Response, next
       // Create a new user with the provided name, email, and role
       const user: IUser = new User({
         email,
+        isTourGuard: true,
       });
   
       await user.save();
@@ -196,7 +197,7 @@ const getGuardInfo = asyncHandler(async(req: Request, res: Response, next: NextF
 
 const updateGuardInfo = asyncHandler(async(req: IUserRequest, res: Response, next: NextFunction) => {
     try {
-        const {email, surname, phoneNumber, name, address, age, gender, language} = req.body;
+        const {email, password, surname, phoneNumber, name, address, age, gender, language} = req.body;
     
         const user = await User.findOne(req.user._id);
     
@@ -207,6 +208,7 @@ const updateGuardInfo = asyncHandler(async(req: IUserRequest, res: Response, nex
         user.name = name;
         user.surname = surname,
         user.email = email;
+        user.password = password;
         user.phoneNumber = phoneNumber;
         user.address = address;
         user.age = age;
@@ -219,6 +221,7 @@ const updateGuardInfo = asyncHandler(async(req: IUserRequest, res: Response, nex
             success: true,
             user,
         })
+        sendToken(user, 201, res)
     } catch (error: any) {
             return next(new ErrorHandler(error.message, 500));
     }

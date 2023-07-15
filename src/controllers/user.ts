@@ -9,7 +9,7 @@ import sendMail from "../utils/sendMail";
 import sendToken from "../utils/jwtToken";
 import User from "../models/user";
 import { IUser, IUserRequest } from "../interface/user";
-import { isAdmin } from "../middleware/auth";
+
 
 
 
@@ -58,49 +58,50 @@ const inviteGuard = asyncHandler  (async (req: IUserRequest, res: Response, next
     }
 });
   
-  // @Desc activate Guard
-  // @Route /api/users/activation
-  // @Method POST
+
+const tourGuardAccountContinue = asyncHandler(async (req: IUserRequest, res: Response, next: NextFunction) => {
+    try {
+
+        const userId = req.params.id;
+
+      const user = await User.findById(userId);
   
-  const activateTourGuard = asyncHandler (async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    
-    const {activation_token } = req.body;
+      if (!user) {
+        res.status(404).json({
+          success: false,
+          message: 'Tour Guide Not found',
+        });
+      }
   
-    const newUser = jwt.verify(
-        activation_token,
-        process.env.ACTIVATION_SECRET as string
-    ) as jwt.JwtPayload;
+      // Update user information
+      if(user){
+      user.name = req.body.name;
+      user.password = req.body.password;
+      user.surname = req.body.surname;
+      user.phoneNumber = req.body.phoneNumber;
+      user.address = req.body.address;
+      user.age = req.body.age;
+      user.gender = req.body.gender;
+      user.language = req.body.language;
+      user.isTourGuard = true;
+     
+      }
+      
+      if(user){
+        await user.save();
+      }
+      
   
-    if(!newUser){
-        return next(new ErrorHandler("Invalid token", 400));
+      res.status(200).json({
+        success: true,
+        message: 'Tour guide registration completed',
+      });
+      
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 500));
     }
-    const {name, surname, email, password, avatar, phoneNumber, address, age, gender, language } = newUser;
+  });
   
-    let user = await User.findOne({email});
-  
-    if(user){
-        return next(new ErrorHandler("User already exists", 400));
-    }
-    user = await User.create({
-        name,
-        surname,
-        email,
-        age,
-        gender,
-        language,
-        avatar,
-        password,
-        phoneNumber,
-        address,
-        isTourGuard: true,
-        
-    });
-    sendToken(user, 201, res)
-  } catch (error:any) {  
-        return next(new ErrorHandler(error.message, 500))
-  }
-  })
   
   // @Desc Login Guard
   // @Route /api/users/login-user
@@ -197,7 +198,7 @@ const getGuardInfo = asyncHandler(async(req: Request, res: Response, next: NextF
 
 const updateGuardInfo = asyncHandler(async(req: IUserRequest, res: Response, next: NextFunction) => {
     try {
-        const {email, password, surname, phoneNumber, name, address, age, gender, language} = req.body;
+        const {email, surname, phoneNumber, name, address, age, gender, language} = req.body;
     
         const user = await User.findOne(req.user._id);
     
@@ -208,7 +209,6 @@ const updateGuardInfo = asyncHandler(async(req: IUserRequest, res: Response, nex
         user.name = name;
         user.surname = surname,
         user.email = email;
-        user.password = password;
         user.phoneNumber = phoneNumber;
         user.address = address;
         user.age = age;
@@ -221,7 +221,6 @@ const updateGuardInfo = asyncHandler(async(req: IUserRequest, res: Response, nex
             success: true,
             user,
         })
-        sendToken(user, 201, res)
     } catch (error: any) {
             return next(new ErrorHandler(error.message, 500));
     }
@@ -675,8 +674,9 @@ const grantAdmin = asyncHandler(async (req: Request, res: Response, next: NextFu
 
 export {
     inviteGuard,
+    tourGuardAccountContinue,
     // uploadGuardFiles,
-    activateTourGuard,
+    // activateTourGuard,
     loginTourGuard,
     getGuard,
     getGuardInfo,

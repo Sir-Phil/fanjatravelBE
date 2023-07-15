@@ -9,12 +9,20 @@ import { IUserRequest } from "../interface/user";
 export const isAuthenticated = asyncHandler(async (req: IUserRequest, res: Response, next: NextFunction) => {
   let token;
 
+  // // Skip authentication check for registration completion route
+  // if (req.originalUrl === '/tour-guide-registration/:id') {
+  //   next();
+  //   return;
+  // }
+
   if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
     try {
       token = req.headers.authorization.split(" ")[1];
       const decoded: any = jwt.verify(token, process.env.JWT_SECRET_KEY as string);
 
       req.user = await User.findById(decoded.id).select("-password");
+      
+      console.log("User data:", req.user);
 
       next();
     } catch (error: any) {
@@ -40,9 +48,12 @@ export const isAdmin = (req: IUserRequest, res: Response, next: NextFunction) =>
 };
 
 export const isTourGuard = (req: IUserRequest, res: Response, next: NextFunction) => {
+  console.log('req.user:', req.user);
   if (req.user && req.user.isTourGuard) {
+    console.log('User is a tour guard');
     next();
   } else {
+    console.log('User is not a tour guard');
     res.status(403);
     throw new Error("User is not a tour guard");
   }

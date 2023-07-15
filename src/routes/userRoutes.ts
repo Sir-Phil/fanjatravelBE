@@ -1,7 +1,7 @@
 import express from "express";
 import {
   UpdateUserPassword,
-  activateTourGuard,
+  // activateTourGuard,
   activateUser,
   adminDeleteTourGuard,
   adminGetTourGuard,
@@ -16,6 +16,7 @@ import {
   logOutGard,
   logOutUser,
   loginUser,
+  tourGuardAccountContinue,
   updateAvatar,
   updateGuardAvatar,
   updateGuardInfo,
@@ -53,11 +54,13 @@ router.delete("/delete-tour-guard/:id", isAuthenticated, isAdmin, adminDeleteTou
 
 // Routes accessible only to tour guards
 // router.post("/create-guard", upload.single("file"), uploadGuardFiles);
-router.post("/activate-guard", activateTourGuard);
-router.get("/get-guard", isTourGuard, getGuard);
+// router.post("/activate-guard", activateTourGuard);
+router.get("/get-guard", isAuthenticated, isTourGuard, getGuard);
 router.get("/get-tour-info/:id", getGuardInfo);
 router.put("/update-guard-avatar", isTourGuard, upload.single("image"), updateGuardAvatar);
-router.put("/tour-guide-registration/:id", isTourGuard, updateGuardInfo);
+router.put("/update-guard-info", isAuthenticated, isTourGuard, updateGuardInfo);
+router.put("/tour-guide-registration/:id", tourGuardAccountContinue);
+
 router.get("/logout-guard", logOutGard);
 
 // Routes to grant a user Admin

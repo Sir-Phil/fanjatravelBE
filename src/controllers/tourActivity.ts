@@ -5,6 +5,8 @@ import Category from "../models/category";
 import { ITourActivities } from "../interface/TourActivate";
 import { IUserRequest } from "../interface/user";
 import { IPlan } from "../interface/activityPlan";
+import User from "../models/user";
+import ErrorHandler from "../utils/ErrorHandler";
 
 // @Desc Get All Activities
 // @Route /api/tour-activities
@@ -128,7 +130,6 @@ const getTopTourByReview = asyncHandler(
   }
 );
 
-//@Desc Get Tour By Category
 // @access Public
 // const getTourActivitiesByCategory = asyncHandler(
 //   async (req: Request, res: Response, next: NextFunction) => {
@@ -194,6 +195,7 @@ const createActivity = asyncHandler(
         discount,
         activityPlan: activityPlan.map((plan : IPlan) => ({
           _id: null,
+          address: plan.address,
           describeLocation: plan.describeLocation,
           planTitle: plan.planTitle,
           planTitleDesc: plan.planTitleDesc,
@@ -324,10 +326,38 @@ const deleteActivityByID = asyncHandler(
   }
 );
 
+const getActivitiesByTourGuide = asyncHandler(async (req: IUserRequest, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.user; // Assuming the authenticated user is a tour guide
+
+    // Check if the tour guide exists
+    const user = await User.findById(id);
+    if (!user || !user.isTourGuard) {
+    res.status(404).json({
+        success: false,
+        message: 'Tour Guide not found',
+      });
+    }
+
+    // Retrieve activities created by the tour guide
+    const activities = await Activities.find({ user: id });
+
+    // Return the activities
+    res.status(200).json({
+      success: true,
+      activities,
+    });
+  } catch (error: any) {
+    return next(new ErrorHandler(error.message, 500));
+  }
+});
+
+
 export {
   getAll,
   searchActivities,
   getTopTourByReview,
+  getActivitiesByTourGuide,
   // getTourActivitiesByCategory,
   getActivityById,
   GetTour,

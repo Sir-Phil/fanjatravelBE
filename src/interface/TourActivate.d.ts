@@ -17,7 +17,7 @@ export interface ITourActivities extends mongoose.Document {
     dayOfActivity: daysOption;
     period: string;
     describeActivity: string;
-    activityDays : Date;
+    activityDays: Date;
     activityFee: Number;
     discount: Number;
     activityPlan: IPlan;

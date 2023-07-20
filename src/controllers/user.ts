@@ -67,6 +67,18 @@ const tourGuardAccountContinue = asyncHandler(async (req: IUserRequest, res: Res
       const user = await User.findById(userId);
   
       if (!user) {
+        if(req.file){
+                const filename = req.file.filename;
+                const filePath = `uploads/${filename}`;
+                fs.unlink(filePath, (err) => {
+                    if(err){
+                        console.log(err);
+                        res.status(500).json({message: "Error deleting file"});
+                    }
+                });
+    
+                return next(new ErrorHandler("User already exists", 400))
+               }
         res.status(404).json({
           success: false,
           message: 'Tour Guide Not found',

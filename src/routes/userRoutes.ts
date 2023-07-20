@@ -40,7 +40,7 @@ router.post("/login-user", loginUser);
 
 // Routes accessible only to authenticated users
 router.get("/get-user", isAuthenticated, getUser);
-router.get("/user-info/:id", isAuthenticated, getUserInfo);
+router.get("/user/:id", isAuthenticated, getUserInfo);
 router.put("/update-user-info", isAuthenticated, updateUserInfo);
 router.put("/update-avatar", isAuthenticated, upload.single("image"), updateAvatar);
 router.put("/update-user-password", isAuthenticated, UpdateUserPassword);
@@ -56,7 +56,7 @@ router.delete("/delete-tour-guard/:id", isAuthenticated, isAdmin, adminDeleteTou
 // router.post("/create-guard", upload.single("file"), uploadGuardFiles);
 // router.post("/activate-guard", activateTourGuard);
 router.get("/get-guard", isAuthenticated, isTourGuard, getGuard);
-router.get("/get-tour-info/:id", getGuardInfo);
+router.get("/get-tour-guard/:id", getGuardInfo);
 router.put("/update-guard-avatar", isTourGuard, upload.single("image"), updateGuardAvatar);
 router.put("/update-guard-info", isAuthenticated, isTourGuard, updateGuardInfo);
 router.put("/tour-guide-registration/:id", tourGuardAccountContinue);

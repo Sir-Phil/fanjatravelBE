@@ -1,26 +1,57 @@
-import cloudinary from 'cloudinary';
+import asyncHandler from "express-async-handler";
+import { NextFunction, Request, Response } from "express";
+import {v2 as cloudinaryV2} from 'cloudinary';
 import dotenv from 'dotenv';
-import asyncHandler from 'express-async-handler';
 
-dotenv.config();
+dotenv.config()
 
-cloudinary.v2.config({
+
+cloudinaryV2.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Controller method to retrieve an image by public ID
-const getImage = asyncHandler (async (req: any, res: any) => {
+const uploadImageToCloudinary = async (file: Express.Multer.File): Promise<string> => {
   try {
-    const { publicId } = req.params;
+    const fileBufferAsString = file.buffer.toString('base64');
+    const result = await cloudinaryV2.uploader.upload(`data:image/png;base64,${fileBufferAsString}`, { folder: 'uploads' });
 
-    const result = await cloudinary.v2.image(publicId, {
-      // Additional options if needed (e.g., width, height, crop, etc.)
-    });
+    if (!result.url) {
+      throw new Error('Failed to upload image to Cloudinary');
+    }
 
-    res.send(result);
+    return result.url;
   } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch image' });
+    throw new Error('Error uploading image to Cloudinary');
+  }
+};
+
+const RemoveImageFromCloudinary = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { public_id } = req.params;
+
+    await cloudinaryV2.uploader.destroy(public_id);
+
+    // Here, you can delete the image URL from the database for the corresponding entity (e.g., activity or user)
+    // ...
+
+    res.status(200).json({
+      success: true,
+      message: 'Image deleted successfully',
+    });
+  } catch (error: any) {
+    console.error(error);
+    res.status(500).json({
+      error: error.message,
+      success: false,
+      message: 'Error deleting image',
+    });
   }
 });
+
+
+export {
+  uploadImageToCloudinary,
+  RemoveImageFromCloudinary
+} 

@@ -7,6 +7,10 @@ import { IUserRequest } from "../interface/user";
 import { IPlan } from "../interface/activityPlan";
 import User from "../models/user";
 import ErrorHandler from "../utils/ErrorHandler";
+import { uploadImageToCloudinary } from "./imageController";
+// import {v2 as cloudinaryV2, UploadApiResponse } from 'cloudinary';
+
+
 
 // @Desc Get All Activities
 // @Route /api/tour-activities
@@ -130,44 +134,16 @@ const getTopTourByReview = asyncHandler(
   }
 );
 
-// @access Public
-// const getTourActivitiesByCategory = asyncHandler(
-//   async (req: Request, res: Response, next: NextFunction) => {
-//     try {
-//       const category = req.query.category; // Assuming the category parameter is passed in the request URL
 
-//       let query = {};
-
-//       if (category) {
-//         // Find the category document by title
-//         const categoryItem = await Category.findOne({ title: category });
-
-//         // If category is found, include it in the query
-//         if (categoryItem) {
-//           query = { category: categoryItem._id };
-//         }
-//       }
-//       // Retrieve tour activities based on the query
-//       const tourActivities = await Activities.find(query)
-//         .populate("category", "title") // Populate the category field and select only the name
-//         .exec();
-
-//       res.status(200).json({
-//         success: true,
-//         data: tourActivities,
-//       });
-//     } catch (error: any) {
-//       res.status(500).json({
-//         success: false,
-//         error: "Error retrieving tour activities by category",
-//       });
-//     }
-//   }
-// );
-
+// @Route /api/activities/create-activities/
+// @Method POST/ @Desc  activities
+// @Access TourGuide
 const createActivity = asyncHandler(
   async (req: IUserRequest, res: Response, next: NextFunction) => {
     try {
+      const imageUrlPromise = (req.files as Express.Multer.File[]).map(uploadImageToCloudinary);
+      const imageUrl = await Promise.all(imageUrlPromise);
+
       const {
         activityTitle,
         activityLocation,
@@ -179,11 +155,11 @@ const createActivity = asyncHandler(
         activityFee,
         discount,
         activityPlan,
-        category,
         images,
+        category,
       } = req.body;
 
-      const newTour: ITourActivities = await Activities.create({
+      const newTourActivity: ITourActivities = await Activities.create({
         activityTitle,
         activityLocation,
         activityType,
@@ -200,17 +176,21 @@ const createActivity = asyncHandler(
           planTitle: plan.planTitle,
           planTitleDesc: plan.planTitleDesc,
         })),
-        images,
+        images : imageUrl,
         category,
         user: req.user._id,
       });
 
       res.status(201).json({
         success: true,
-        data: newTour,
+        data: newTourActivity,
       });
     } catch (error: any) {
-      res.status(500).json({ error: error.message });
+       console.error(error);
+      res.status(500).json({ error: error.message,
+        success: false,
+        message: 'Error uploading images'
+       });
     }
   }
 );

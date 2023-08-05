@@ -74,12 +74,15 @@ const TourActivitiesSchema: Schema<ITourActivities> = new Schema({
     type: Number,
     default: 0,
   },
+  basePrice: {
+    type: Number,
+  },
   category: {
     type: Schema.Types.ObjectId,
     ref: "Category",
     required: true,
   },
-  user: {
+  tourGuard: {
     type: Schema.Types.ObjectId,
     ref: "User",
     required: [true, "Please provide the Tour Guard!"],

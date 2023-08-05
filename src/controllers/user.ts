@@ -1,6 +1,5 @@
 import asyncHandler from "express-async-handler";
 import { Response, Request, NextFunction } from "express";
-import upload from "../utils/multer";
 import fs from 'fs';
 import ErrorHandler from "../utils/ErrorHandler";
 import path from "path";
@@ -62,7 +61,7 @@ const inviteGuard = asyncHandler  (async (req: IUserRequest, res: Response, next
 const tourGuardAccountContinue = asyncHandler(async (req: IUserRequest, res: Response, next: NextFunction) => {
     try {
 
-        const userId = req.params.id;
+        const userId = req.params.userId;
 
       const user = await User.findById(userId);
   
@@ -330,27 +329,9 @@ const uploadFiles = async(req : Request, res : Response, next :NextFunction) => 
         const userEmail = await User.findOne({email});
 
         if(userEmail) {
-        //    if(req.file){
-        //     const filename = req.file.filename;
-        //     const filePath = `uploads/${filename}`;
-        //     fs.unlink(filePath, (err) => {
-        //         if(err){
-        //             console.log(err);
-        //             res.status(500).json({message: "Error deleting file"});
-        //         }
-        //     });
-
-        //     return next(new ErrorHandler("User already exists", 400))
-        //    }
+         return next(new ErrorHandler("User already exists", 400))
            
         }
-
-        // if (!req.file) {
-        //     return next(new ErrorHandler('No file provided', 400));
-        //   }
-          
-        // const filename = req.file.filename;
-        // const fileUrl = path.join(filename)
 
         const user = {
             name: name,

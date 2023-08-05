@@ -18,15 +18,16 @@ export interface ITourActivities extends mongoose.Document {
     period: string;
     describeActivity: string;
     activityDays: Date;
-    activityFee: Number;
-    discount: Number;
+    activityFee: number;
+    discount: number;
     activityPlan: IPlan;
-    rating?: Number;
+    rating?: number;
     images: IImage[];
     reviews?: IUser[];
-    numberOfReviews: Number;
+    numberOfReviews: number;
     category: mongoose.Types.ObjectId | ICategory;
-    user: mongoose.Types.ObjectId | IUser;
+    tourGuard: mongoose.Types.ObjectId | IUser;
+    basePrice: number;
     createdAt: Date;
     updatedAt: Date;
 }

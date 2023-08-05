@@ -8,7 +8,6 @@ import { IPlan } from "../interface/activityPlan";
 import User from "../models/user";
 import ErrorHandler from "../utils/ErrorHandler";
 import { uploadImageToCloudinary } from "./imageController";
-// import {v2 as cloudinaryV2, UploadApiResponse } from 'cloudinary';
 
 
 
@@ -61,10 +60,10 @@ const getAll = asyncHandler(async (req: Request, res: Response, next: NextFuncti
 const getActivityById = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ) => {
   try {
-    const activityId = req.params.id;
+    const activityId = req.params.activityId;
 
     const activity = await Activities.findById(activityId);
 
@@ -117,7 +116,7 @@ const searchActivities = asyncHandler(async (req: Request, res: Response) => {
 });
 
 const getTopTourByReview = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (_req: Request, res: Response, _next: NextFunction) => {
     try {
       const topTour = await Activities.find().sort({ rating: 1 }).limit(10);
 
@@ -178,7 +177,7 @@ const createActivity = asyncHandler(
         })),
         images : imageUrl,
         category,
-        user: req.user._id,
+        tourGuard: req.user._id,
       });
 
       res.status(201).json({
@@ -221,9 +220,9 @@ const GetTour = asyncHandler(async (req: Request, res: Response) => {
 const getTourById = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const tourActivityId: string = req.params.id;
+      const activityId: string = req.params.activityId;
       const tourActivity: ITourActivities | null = await Activities.findById(
-        tourActivityId
+        activityId
       );
 
       if (!tourActivity) {
@@ -251,11 +250,11 @@ const getTourById = asyncHandler(
 const updateActivity = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const tourActivityId: string = req.params.id;
+      const activityId: string = req.params.activityId;
       const updateData: Partial<ITourActivities> = req.body;
 
       const tourActivity: ITourActivities | null =
-        await Activities.findByIdAndUpdate(tourActivityId, updateData, {
+        await Activities.findByIdAndUpdate(activityId, updateData, {
           new: true,
         });
 
@@ -284,10 +283,10 @@ const updateActivity = asyncHandler(
 const deleteActivityByID = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const tourActivityId: string = req.params.id;
+      const activityId: string = req.params.activityId;
 
       const tourActivity: ITourActivities | null =
-        await Activities.findByIdAndDelete(tourActivityId);
+        await Activities.findByIdAndDelete(activityId);
 
       if (!tourActivity) {
         res.status(404).json({

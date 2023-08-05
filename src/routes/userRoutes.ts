@@ -39,12 +39,12 @@ router.post("/activation", activateUser);
 router.post("/login-user", loginUser);
 
 // Routes accessible only to authenticated users
-router.get("/get-user", isAuthenticated, getUser);
-router.get("/user/:id", isAuthenticated, getUserInfo);
-router.put("/update-user-info", isAuthenticated, updateUserInfo);
-router.put("/update-avatar", isAuthenticated, upload.single("image"), updateAvatar);
-router.put("/update-user-password", isAuthenticated, UpdateUserPassword);
-router.get("/logout", isAuthenticated, logOutUser);
+router.get("/get-user", getUser);
+router.get("/user/:id", getUserInfo);
+router.put("/update-user-info", updateUserInfo);
+router.put("/update-avatar", upload.single("image"), updateAvatar);
+router.put("/update-user-password", UpdateUserPassword);
+router.get("/logout", logOutUser);
 
 // Routes accessible only to admin
 router.get("/admin-all-user", isAuthenticated, isAdmin, adminGetUser);

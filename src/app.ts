@@ -1,4 +1,4 @@
-import express from "express"
+import express, { Request, Response } from "express"
 import cors from "cors";
 import errorHandler from "./middleware/error";
 import cookieParser from "cookie-parser";
@@ -6,10 +6,12 @@ import bodyParser from "body-parser";
 import path from "path";
 
 //imports for routes
-import tempbookingRoute from "./routes/tembookingRoute";
+import bookingRoute from "./routes/bookingRoute";
 import userRoutes from "./routes/userRoutes";
 import categoryRoute from "./routes/categoryRoute";
 import tourActivitiesRoute from  "./routes/toursActivitiesRoute";
+import tourGuardRoutes from "./routes/tourGuardRoutes";
+import createPayPalPayment from "./utils/paypalIntegration";
 
 const app = express();
 
@@ -33,11 +35,23 @@ if (process.env.NODE_ENV !== "PRODUCTION") {
     
   }
 
+  app.post("/api/paypal/gateway", async(req: Request, res: Response) => {
+    const {amount, useCard, totalAmount} = req.body;
+
+    try {
+      const approvalUrl = await createPayPalPayment(amount, useCard, totalAmount);
+      res.json({success: true, approvalUrl});
+    } catch (error) {
+      res.status(500).json({success: false, message: "Payment Creation failed"});
+    }
+  })
+
 //api endpoint routes
-app.use("/api/booking", tempbookingRoute)
+app.use("/api/booking", bookingRoute)
 app.use("/api/user", userRoutes);
 app.use("/api/activities", tourActivitiesRoute);
 app.use("/api/category", categoryRoute);
+app.use("/api/tour-guard", tourGuardRoutes)
 
 
 //for ErrorHandling

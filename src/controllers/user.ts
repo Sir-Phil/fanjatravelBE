@@ -61,7 +61,7 @@ const inviteGuard = asyncHandler  (async (req: IUserRequest, res: Response, next
 const tourGuardAccountContinue = asyncHandler(async (req: IUserRequest, res: Response, next: NextFunction) => {
     try {
 
-        const userId = req.params.userId;
+        const userId = req.params.id;
 
       const user = await User.findById(userId);
   

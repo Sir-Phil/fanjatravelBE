@@ -7,11 +7,11 @@ import { Gender } from "../interface/genderOption";
 
 
 const userSchema = new mongoose.Schema({
-    name: {
+    firstName: {
         type: String,
         // required: [true, "Please enter your name!"]
     },
-    surname: {
+    lastName: {
         type: String,
         // required: [true, "Please enter your name!"]
     },

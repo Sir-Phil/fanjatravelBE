@@ -7,8 +7,8 @@ export interface IUserRequest extends Request {
 }
 
 export interface IUser extends mongoose.Document {
-    name: string;
-    surname:string;
+    firstName: string;
+    lastName:string;
     age: string;
     gender: Gender;
     language: typeof LanguageOptions[number][];

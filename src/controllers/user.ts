@@ -86,9 +86,9 @@ const tourGuardAccountContinue = asyncHandler(async (req: IUserRequest, res: Res
   
       // Update user information
       if(user){
-      user.name = req.body.name;
+      user.firstName = req.body.firstName;
       user.password = req.body.password;
-      user.surname = req.body.surname;
+      user.lastName = req.body.lastName;
       user.phoneNumber = req.body.phoneNumber;
       user.address = req.body.address;
       user.age = req.body.age;
@@ -150,7 +150,7 @@ const tourGuardAccountContinue = asyncHandler(async (req: IUserRequest, res: Res
 
 const getGuard = asyncHandler(async(req: IUserRequest, res: Response, next: NextFunction) => {
     try {
-        const user = await User.findById(req.user.id);
+        const user = await User.findById(req.user.id).select('-password');
 
     if(!user) {
         return next(new ErrorHandler("User doesn't exist", 400));
@@ -209,7 +209,7 @@ const getGuardInfo = asyncHandler(async(req: Request, res: Response, next: NextF
 
 const updateGuardInfo = asyncHandler(async(req: IUserRequest, res: Response, next: NextFunction) => {
     try {
-        const {email, surname, phoneNumber, name, address, age, gender, language} = req.body;
+        const {email, lastName, phoneNumber, firstName, address, age, gender, language} = req.body;
     
         const user = await User.findOne(req.user._id);
     
@@ -217,8 +217,8 @@ const updateGuardInfo = asyncHandler(async(req: IUserRequest, res: Response, nex
             return next(new ErrorHandler("User not found", 400));
         }
     
-        user.name = name;
-        user.surname = surname,
+        user.firstName = firstName;
+        user.lastName = lastName,
         user.email = email;
         user.phoneNumber = phoneNumber;
         user.address = address;
@@ -491,7 +491,7 @@ const logOutUser = asyncHandler (async( req: Request, res: Response, next: NextF
 
 const updateUserInfo = asyncHandler(async(req: Request, res: Response, next: NextFunction) => {
     try {
-        const {email, password, phoneNumber, name} = req.body;
+        const {email, password, phoneNumber, firstName} = req.body;
     
         const user = await User.findOne({email}).select("+password");
     
@@ -507,7 +507,7 @@ const updateUserInfo = asyncHandler(async(req: Request, res: Response, next: Nex
             );
         }
     
-        user.name = name;
+        user.firstName = firstName;
         user.email = email;
         user.phoneNumber = phoneNumber;
     

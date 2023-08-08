@@ -89,7 +89,7 @@ const newBooking = asyncHandler(
             <p>Your Booking Information:</p>
             <p>Booking ID: ${booking._id}</p>
             <p>Activity Booked: ${activityDetails.activityTitle}</p>
-            <p>Tour Guard: ${tourGuideDetails.name}</p>
+            <p>Tour Guard: ${tourGuideDetails.firstName}</p>
             <p>Date Booked: ${dateBooked}</p>
             <p>Service Fee: ${serviceCharge}</p>
             <p>Amount Paid: ${totalAmount}</p>

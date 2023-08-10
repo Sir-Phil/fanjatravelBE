@@ -20,7 +20,9 @@ const uploadImageToCloudinary = async (file: Express.Multer.File): Promise<strin
     const fileBufferAsString = file.buffer.toString('base64');
     const result = await cloudinaryV2.uploader.upload(`data:image/png;base64,${fileBufferAsString}`, 
     { folder: 'uploads',
-      max_file_size: 50000000 // 50mb size
+      max_file_size: 500000, // 500kb size
+      quality: 'auto:best',
+      fetch_format: 'auto',
     }
    ) as CloudinaryUploadResult;
 

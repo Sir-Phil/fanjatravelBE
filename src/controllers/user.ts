@@ -8,6 +8,7 @@ import sendMail from "../utils/sendMail";
 import sendToken from "../utils/jwtToken";
 import User from "../models/user";
 import { IUser, IUserRequest } from "../interface/user";
+import { UpdateWriteOpResult } from "mongoose";
 
 
 
@@ -95,7 +96,7 @@ const tourGuardAccountContinue = asyncHandler(async (req: IUserRequest, res: Res
       user.gender = req.body.gender;
       user.language = req.body.language;
       user.isTourGuard = true;
-     
+      user.verified = true;
       }
       
       if(user){
@@ -128,7 +129,7 @@ const tourGuardAccountContinue = asyncHandler(async (req: IUserRequest, res: Res
     const user = await User.findOne({email}).select("+password");
   
     if(!user){
-        return next(new ErrorHandler("User doesn't exists", 400))
+        return next(new ErrorHandler("User does not exist", 400))
     }
   
     const isPasswordValid = await user.comparePassword(password);
@@ -153,7 +154,7 @@ const getGuard = asyncHandler(async(req: IUserRequest, res: Response, next: Next
         const user = await User.findById(req.user.id).select('-password');
 
     if(!user) {
-        return next(new ErrorHandler("User doesn't exist", 400));
+        return next(new ErrorHandler("User does not exist", 400));
     }
 
     res.status(200).json({
@@ -275,12 +276,12 @@ const updateGuardAvatar = asyncHandler (async(req: IUserRequest, res: Response, 
 
 const adminGetTourGuard = asyncHandler(async(req:Request, res:Response, next: NextFunction) => {
     try {
-        const users = await User.find().sort({
+        const tourGuard = await User.find({isTourGuard: true}).select('-password').sort({
             createdAt: -1,
         });
         res.status(201).json({
             success: true,
-            users,
+            tourGuard,
         });
     } catch (error: any) {
             return next (new ErrorHandler(error.message, 500));
@@ -312,6 +313,31 @@ const adminDeleteTourGuard = asyncHandler(async(req:Request, res:Response, next:
     }
 })
 
+// @Desc verify tourGuard by Admin 
+// @Route /api/users/verified-tour-guard
+// @Method PUT
+//@access Admin
+const adminVerifyTourGuards = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const tourGuides = await User.updateMany(
+            { isTourGuard: true, verified: false }, // Filter for tour guides that are not verified
+            { $set: { verified: true } } // Update the verified status to true
+          );
+      
+          console.log('Filtering Criteria:', { isTourGuard: true, verified: false });
+          console.log('Update Result:', tourGuides);
+      
+          res.status(200).json({
+            success: true,
+            message: 'Tour guides verified successfully',
+            verifiedCount: tourGuides.modifiedCount // Count of tour guides that were updated
+      });
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  });
+  
+  
 
 
 
@@ -690,5 +716,6 @@ export {
     adminGetUser,
     adminGetTourGuard,
     adminDeleteTourGuard,
-    grantAdmin
+    grantAdmin,
+    adminVerifyTourGuards
 }

@@ -19,6 +19,7 @@ export interface IUser extends mongoose.Document {
     address: string;
     isAdmin: boolean;
     isTourGuard: boolean;
+    verified: boolean;
     createdAt: Date;
     updatedAt: Date;
     comparePassword(enteredPassword: string): Promise<Boolean>;

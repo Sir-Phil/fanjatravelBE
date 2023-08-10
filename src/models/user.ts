@@ -9,15 +9,15 @@ import { Gender } from "../interface/genderOption";
 const userSchema = new mongoose.Schema({
     firstName: {
         type: String,
-        // required: [true, "Please enter your name!"]
+        required: [false, "Please enter your name!"]
     },
     lastName: {
         type: String,
-        // required: [true, "Please enter your name!"]
+        required: [false, "Please enter your name!"]
     },
     age: {
         type: String,
-        // required: [true, "Please enter your name!"]
+        required: [false, "Please enter your name!"]
     },
     gender: {
         type: String,
@@ -25,7 +25,7 @@ const userSchema = new mongoose.Schema({
     },
     language: { 
         type: [{ type: String, enum: LanguageOptions }],
-        //  required: true
+          required: false
          },
 
     email: {
@@ -35,7 +35,7 @@ const userSchema = new mongoose.Schema({
     
     password: {
         type: String,
-        // required: [true, "Please enter your password"],
+        required: [false, "Please enter your password"],
         // minLength: [4, "Password Should be more 4 characters"],
         // select: false
     },
@@ -52,14 +52,17 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
-
+    verified: {
+        type: Boolean,
+        default: false
+    },
     avatar: {
         type: String,
-        // required: true
+        required: false
     },
     address: {
         type: String,
-        
+        required: false
       },
     createdAt: {
         type: Date,

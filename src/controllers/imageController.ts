@@ -1,9 +1,7 @@
-import asyncHandler from "express-async-handler";
-import { NextFunction, Request, Response } from "express";
 import {v2 as cloudinaryV2} from 'cloudinary';
 import dotenv from 'dotenv';
 
-dotenv.config()
+dotenv.config();
 
 
 cloudinaryV2.config({
@@ -12,10 +10,19 @@ cloudinaryV2.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
+
+interface CloudinaryUploadResult {
+  url: string;
+}
+
 const uploadImageToCloudinary = async (file: Express.Multer.File): Promise<string> => {
   try {
     const fileBufferAsString = file.buffer.toString('base64');
-    const result = await cloudinaryV2.uploader.upload(`data:image/png;base64,${fileBufferAsString}`, { folder: 'uploads' });
+    const result = await cloudinaryV2.uploader.upload(`data:image/png;base64,${fileBufferAsString}`, 
+    { folder: 'uploads',
+      max_file_size: 50000000 // 50mb size
+    }
+   ) as CloudinaryUploadResult;
 
     if (!result.url) {
       throw new Error('Failed to upload image to Cloudinary');
@@ -27,31 +34,38 @@ const uploadImageToCloudinary = async (file: Express.Multer.File): Promise<strin
   }
 };
 
-const RemoveImageFromCloudinary = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+const deleteImageFromCloudinary = async (public_id: string): Promise<boolean> => {
   try {
-    const { public_id } = req.params;
+    const result = await cloudinaryV2.uploader.destroy(public_id);
 
-    await cloudinaryV2.uploader.destroy(public_id);
-
-    // Here, you can delete the image URL from the database for the corresponding entity (e.g., activity or user)
+    // Here, you can handle the deletion of the image URL from the database
     // ...
 
-    res.status(200).json({
-      success: true,
-      message: 'Image deleted successfully',
-    });
-  } catch (error: any) {
+    return result.result === 'ok';
+  } catch (error) {
     console.error(error);
-    res.status(500).json({
-      error: error.message,
-      success: false,
-      message: 'Error deleting image',
-    });
+    throw new Error('Error deleting image from Cloudinary');
   }
-});
+};
 
+const updateImageOnCloudinary = async (public_id: string, newFile: Express.Multer.File): Promise<string> => {
+  try {
+    const deleteResult = await deleteImageFromCloudinary(public_id);
+
+    if (deleteResult) {
+      const newImageUrl = await uploadImageToCloudinary(newFile);
+      return newImageUrl;
+    } else {
+      throw new Error('Failed to delete old image from Cloudinary');
+    }
+  } catch (error) {
+    console.error(error);
+    throw new Error('Error updating image on Cloudinary');
+  }
+};
 
 export {
   uploadImageToCloudinary,
-  RemoveImageFromCloudinary
+  deleteImageFromCloudinary,
+  updateImageOnCloudinary
 } 

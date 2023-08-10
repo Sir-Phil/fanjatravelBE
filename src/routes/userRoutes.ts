@@ -6,6 +6,7 @@ import {
   adminDeleteTourGuard,
   adminGetTourGuard,
   adminGetUser,
+  adminVerifyTourGuards,
   deleteUser,
   getGuard,
   getGuardInfo,
@@ -69,5 +70,6 @@ router.post("/users/:id/grantAdmin", grantAdmin);
 // Routes accessible only to admin (including tour guards)
 
 router.post("/invite-guard", isAuthenticated, isAdmin, inviteGuard);
+router.put("/verify-tour-guard", isAuthenticated, isAdmin, adminVerifyTourGuards);
 
 export default router;

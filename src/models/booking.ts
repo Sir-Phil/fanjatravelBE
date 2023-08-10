@@ -5,12 +5,12 @@ const bookingSchema = new mongoose.Schema({
     activity: {
         type: Schema.Types.ObjectId,
         ref: "Activity",
-        // required: true
+        required: false
     },
     user: {
         type:Schema.Types.ObjectId,
         ref: "User",
-        // required: true
+        required: false
     },
     tourGuard: {
         type: Schema.Types.ObjectId,
@@ -18,31 +18,31 @@ const bookingSchema = new mongoose.Schema({
     },
     fname: {
         type: String,
-        // required: true,
+        required: false,
     },
     lName: {
         type: String,
-        // required: true,
+        required: false,
     },
     email: {
         type: String,
-        // required: true,
+        required: false,
     },
     phoneNumber: {
         type: Number,
-        // required: true
+        required: false
     },
     dateBooked: {
         type: Date,
-        // required: true
+        required: false
     },
     timeBooked: {
         type: String,
-        // required: true
+        required: false
     },
     numOfPerson: {
         type: Number,
-        // required: true
+        required: false
     },
     paymentInfo: {
         id: {type: String},
@@ -54,11 +54,11 @@ const bookingSchema = new mongoose.Schema({
     },
     paidAt: {
         type: Date,
-        // required: true
+        required: false
     },
     totalAmount: {
         type: Number,
-        // required: true
+        required: false
     },
 },{
     timestamps: true

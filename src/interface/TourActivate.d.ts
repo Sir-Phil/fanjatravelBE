@@ -5,7 +5,9 @@ import { IUser } from "./user";
 import { ICategory } from "./category";
 
 interface IImage {
- image: string,
+    _id: string;
+    url: string;
+    public_id: string;
 }
 
 

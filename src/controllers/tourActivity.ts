@@ -2,12 +2,12 @@ import { NextFunction, Request, Response } from "express";
 import asyncHandler from "express-async-handler";
 import Activities from "../models/tourActivity";
 import Category from "../models/category";
-import { ITourActivities } from "../interface/TourActivate";
+import { IImage, ITourActivities } from "../interface/TourActivate";
 import { IUserRequest } from "../interface/user";
 import { IPlan } from "../interface/activityPlan";
 import User from "../models/user";
 import ErrorHandler from "../utils/ErrorHandler";
-import { uploadImageToCloudinary } from "./imageController";
+import { deleteImageFromCloudinary, updateImageOnCloudinary, uploadImageToCloudinary } from "./imageController";
 
 
 
@@ -63,7 +63,7 @@ const getActivityById = async (
   _next: NextFunction
 ) => {
   try {
-    const activityId = req.params.activityId;
+    const activityId = req.params.id;
 
     const activity = await Activities.findById(activityId);
 
@@ -138,7 +138,7 @@ const getTopTourByReview = asyncHandler(
 // @Method POST/ @Desc  activities
 // @Access TourGuide
 const createActivity = asyncHandler(
-  async (req: IUserRequest, res: Response, next: NextFunction) => {
+  async (req: IUserRequest, res: Response, _next: NextFunction) => {
     try {
       const imageUrlPromise = (req.files as Express.Multer.File[]).map(uploadImageToCloudinary);
       const imageUrl = await Promise.all(imageUrlPromise);
@@ -154,9 +154,9 @@ const createActivity = asyncHandler(
         activityFee,
         discount,
         activityPlan,
-        images,
         category,
       } = req.body;
+
 
       const newTourActivity: ITourActivities = await Activities.create({
         activityTitle,
@@ -179,6 +179,8 @@ const createActivity = asyncHandler(
         category,
         tourGuard: req.user._id,
       });
+
+    
 
       res.status(201).json({
         success: true,
@@ -331,6 +333,103 @@ const getActivitiesByTourGuide = asyncHandler(async (req: IUserRequest, res: Res
   }
 });
 
+const deleteActivityImage = asyncHandler(async( req: Request, res: Response, next: NextFunction) => {
+try {
+  const {activityId, imageId } = req.params;
+
+  //function to activity by id 
+  const activity = await Activities.findById(activityId);
+
+  if(!activity) {
+    res.status(404).json({error: 'Activity not found'});
+    return
+  }
+
+  const imageIndex = activity.images.findIndex((image) => image._id === imageId);
+
+  if(imageIndex === -1 ){
+    res.status(404).json({error: 'Image not found'});
+    return;
+  }
+
+  const publicId = activity.images[imageIndex].public_id;
+  const deleteResult = await deleteImageFromCloudinary(publicId);
+
+  if(deleteResult) {
+    activity.images.splice(imageIndex, 1);
+    await activity.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Image delete from activity successfully'
+    });
+  }else{
+    res.status(500).json({
+      error: 'Error deleting image from Cloudinary',
+      success: false,
+      message: 'Error deleting image from activity',
+    });
+  }
+} catch (error) {
+  console.error(error);
+  res.status(500).json({
+    error:(error as Error).message,
+    success: false,
+    message: 'Error deleting image from activity',
+  });
+}
+});
+
+const updateActivityImage = asyncHandler (async(req: Request, res: Response, next: NextFunction) => {
+  try {
+    const {activityId, imageId} = req.params
+
+  const activity = await Activities.findById(activityId);
+
+  if(!activity) {
+    res.status(404).json({ error: 'Activity notfound'});
+    return
+  }
+
+  const imageIndex = activity.images.findIndex((image) => image._id === imageId);
+
+  if(imageIndex === -1){
+    res.status(404).json({error: 'Image not found'});
+    return
+  }
+
+  const publicId = activity.images[imageIndex].public_id;
+
+  if(!req.file){
+    res.status(400).json({error: 'No new image uploaded'})
+    return
+  }
+
+  // Assuming you have the new image file from Multer middleware
+  const newImageFile = req.file;
+
+   // Update the image on Cloudinary and update the activity
+  const newImageUrl = await updateImageOnCloudinary(publicId, newImageFile);
+
+  activity.images[imageIndex].url = newImageUrl;
+  await activity.save();
+
+  res.status(200).json({
+    success: true,
+    message: 'Image updated in activity successfully',
+    data: newImageUrl,
+  });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      error: (error as Error).message,
+      success: false,
+      message: 'Error updating image in activity'
+    })
+  }
+  
+});
+
 
 export {
   getAll,
@@ -344,4 +443,6 @@ export {
   createActivity,
   updateActivity,
   deleteActivityByID,
+  deleteActivityImage,
+  updateActivityImage
 };

@@ -63,7 +63,7 @@ const TourActivitiesSchema: Schema<ITourActivities> = new Schema({
   },
   images:{
         type: [String],
-        required: true,
+        required: false,
     },
 
   reviews:[{

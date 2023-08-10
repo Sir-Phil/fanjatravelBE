@@ -210,7 +210,7 @@ const getGuardInfo = asyncHandler(async(req: Request, res: Response, next: NextF
 
 const updateGuardInfo = asyncHandler(async(req: IUserRequest, res: Response, next: NextFunction) => {
     try {
-        const {email, lastName, phoneNumber, firstName, address, age, gender, language} = req.body;
+        const {lastName, phoneNumber, firstName, address, age, gender, language} = req.body;
     
         const user = await User.findOne(req.user._id);
     
@@ -220,7 +220,6 @@ const updateGuardInfo = asyncHandler(async(req: IUserRequest, res: Response, nex
     
         user.firstName = firstName;
         user.lastName = lastName,
-        user.email = email;
         user.phoneNumber = phoneNumber;
         user.address = address;
         user.age = age;
@@ -455,7 +454,7 @@ const loginUser = asyncHandler(async(req: Request, res: Response, next: NextFunc
     const user = await User.findOne({email}).select("+password");
 
     if(!user){
-        return next(new ErrorHandler("User doesn't exists", 400))
+        return next(new ErrorHandler("User does not exists", 400))
     }
 
     const isPasswordValid = await user.comparePassword(password);
@@ -480,7 +479,7 @@ const getUser = asyncHandler(async(req: IUserRequest, res: Response, next: NextF
         const user = await User.findById(req.user.id);
 
     if(!user) {
-        return next(new ErrorHandler("User doesn't exist", 400));
+        return next(new ErrorHandler("User does not exist", 400));
     }
 
     res.status(200).json({

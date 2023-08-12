@@ -13,24 +13,28 @@ cloudinaryV2.config({
 
 interface CloudinaryUploadResult {
   url: string;
+  public_id: string;
 }
 
-const uploadImageToCloudinary = async (file: Express.Multer.File): Promise<string> => {
+const uploadImageToCloudinary = async (file: Express.Multer.File): Promise<CloudinaryUploadResult> => {
   try {
     const fileBufferAsString = file.buffer.toString('base64');
     const result = await cloudinaryV2.uploader.upload(`data:image/png;base64,${fileBufferAsString}`, 
     { folder: 'uploads',
-      max_file_size: 500000, // 500kb size
+      max_file_size: 50000000, // 50mb size
       quality: 'auto:best',
       fetch_format: 'auto',
     }
    ) as CloudinaryUploadResult;
 
-    if (!result.url) {
-      throw new Error('Failed to upload image to Cloudinary');
-    }
+   if (!result.url || !result.public_id) {
+    throw new Error('Failed to upload image to Cloudinary');
+  }
 
-    return result.url;
+  return {
+    url: result.url,
+    public_id: result.public_id
+  }
   } catch (error) {
     throw new Error('Error uploading image to Cloudinary');
   }
@@ -50,7 +54,7 @@ const deleteImageFromCloudinary = async (public_id: string): Promise<boolean> =>
   }
 };
 
-const updateImageOnCloudinary = async (public_id: string, newFile: Express.Multer.File): Promise<string> => {
+const updateImageOnCloudinary = async (public_id: string, newFile: Express.Multer.File): Promise<CloudinaryUploadResult> => {
   try {
     const deleteResult = await deleteImageFromCloudinary(public_id);
 

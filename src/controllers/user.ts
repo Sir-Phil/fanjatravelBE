@@ -93,6 +93,8 @@ const tourGuardAccountContinue = asyncHandler(async (req: IUserRequest, res: Res
       user.address = req.body.address;
       user.age = req.body.age;
       user.gender = req.body.gender;
+      user.country = req.body.country;
+      user.motto = req.body.motto;
       user.language = req.body.language;
       user.isTourGuard = true;
       user.verified = true;
@@ -209,7 +211,7 @@ const getGuardInfo = asyncHandler(async(req: Request, res: Response, next: NextF
 
 const updateGuardInfo = asyncHandler(async(req: IUserRequest, res: Response, next: NextFunction) => {
     try {
-        const {lastName, phoneNumber, firstName, address, age, gender, language} = req.body;
+        const {lastName, phoneNumber, firstName, address, age, gender, language, country, motto} = req.body;
     
         const user = await User.findOne(req.user._id);
     
@@ -224,6 +226,8 @@ const updateGuardInfo = asyncHandler(async(req: IUserRequest, res: Response, nex
         user.age = age;
         user.gender = gender;
         user.language = language;
+        user.country = country;
+        user.motto = motto;
 
         await user.save();
     
@@ -414,7 +418,7 @@ const activateUser = asyncHandler (async (req: Request, res: Response, next: Nex
     if(!newUser){
         return next(new ErrorHandler("Invalid token", 400));
     }
-    const {name, surname, language, age, gender, email, password, avatar, address, phoneNumber } = newUser;
+    const {name, surname, language, age, gender, email, password, avatar, address, phoneNumber, country, motto, } = newUser;
 
     let user = await User.findOne({email});
 
@@ -431,7 +435,7 @@ const activateUser = asyncHandler (async (req: Request, res: Response, next: Nex
         phoneNumber,
         language,
         age,
-        gender,
+        gender
     });
     sendToken(user, 201, res)
  } catch (error:any) {  

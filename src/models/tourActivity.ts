@@ -61,11 +61,12 @@ const TourActivitiesSchema: Schema<ITourActivities> = new Schema({
   rating: {
     type: Number,
   },
-  images:{
-        type: [String],
-        required: false,
+  images: [
+    {
+      url: { type: String, required: false },
+      public_id: { type: String, required: false },
     },
-
+  ],
   reviews:[{
       type: Schema.Types.ObjectId,
       ref: "User",

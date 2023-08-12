@@ -17,6 +17,8 @@ export interface IUser extends mongoose.Document {
     avatar?: string;
     phoneNumber: number;
     address: string;
+    country: string;
+    motto: string;
     isAdmin: boolean;
     isTourGuard: boolean;
     verified: boolean;

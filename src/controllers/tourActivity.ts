@@ -140,9 +140,10 @@ const getTopTourByReview = asyncHandler(
 const createActivity = asyncHandler(
   async (req: IUserRequest, res: Response, _next: NextFunction) => {
     try {
-      const imageUrlPromise = (req.files as Express.Multer.File[]).map(uploadImageToCloudinary);
-      const imageUrl = await Promise.all(imageUrlPromise);
-
+      const imageResults = await Promise.all(
+        (req.files as Express.Multer.File[]).map(uploadImageToCloudinary)
+      );
+      
       const {
         activityTitle,
         activityLocation,
@@ -175,12 +176,10 @@ const createActivity = asyncHandler(
           planTitle: plan.planTitle,
           planTitleDesc: plan.planTitleDesc,
         })),
-        images : imageUrl,
+        images : imageResults,
         category,
         tourGuard: req.user._id,
       });
-
-    
 
       res.status(201).json({
         success: true,
@@ -380,55 +379,56 @@ try {
 }
 });
 
-const updateActivityImage = asyncHandler (async(req: Request, res: Response, next: NextFunction) => {
+const updateActivityImage = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const {activityId, imageId} = req.params
+    const { activityId, imageId } = req.params;
 
-  const activity = await Activities.findById(activityId);
+    const activity = await Activities.findById(activityId);
 
-  if(!activity) {
-    res.status(404).json({ error: 'Activity notfound'});
-    return
-  }
+    if (!activity) {
+      res.status(404).json({ error: 'Activity not found' });
+      return;
+    }
 
-  const imageIndex = activity.images.findIndex((image) => image._id === imageId);
+    const imageIndex = activity.images.findIndex((image) => image._id === imageId);
 
-  if(imageIndex === -1){
-    res.status(404).json({error: 'Image not found'});
-    return
-  }
+    if (imageIndex === -1) {
+      res.status(404).json({ error: 'Image not found' });
+      return;
+    }
 
-  const publicId = activity.images[imageIndex].public_id;
+    const publicId = activity.images[imageIndex].public_id;
 
-  if(!req.file){
-    res.status(400).json({error: 'No new image uploaded'})
-    return
-  }
+    if (!req.file) {
+      res.status(400).json({ error: 'No new image uploaded' });
+      return;
+    }
 
-  // Assuming you have the new image file from Multer middleware
-  const newImageFile = req.file;
+    // Assuming you have the new image file from Multer middleware
+    const newImageFile = req.file;
 
-   // Update the image on Cloudinary and update the activity
-  const newImageUrl = await updateImageOnCloudinary(publicId, newImageFile);
+    // Update the image on Cloudinary and get the new image URL
+    const updatedImageInfo = await updateImageOnCloudinary(publicId, newImageFile);
+    const newImageUrl = updatedImageInfo.url;
 
-  activity.images[imageIndex].url = newImageUrl;
-  await activity.save();
+    activity.images[imageIndex].url = newImageUrl;
+    await activity.save();
 
-  res.status(200).json({
-    success: true,
-    message: 'Image updated in activity successfully',
-    data: newImageUrl,
-  });
+    res.status(200).json({
+      success: true,
+      message: 'Image updated in activity successfully',
+      data: newImageUrl,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({
       error: (error as Error).message,
       success: false,
-      message: 'Error updating image in activity'
-    })
+      message: 'Error updating image in activity',
+    });
   }
-  
 });
+
 
 
 export {

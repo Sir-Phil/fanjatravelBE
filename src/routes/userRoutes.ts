@@ -57,7 +57,7 @@ router.delete("/delete-tour-guard/:id", isAuthenticated, isAdmin, adminDeleteTou
 // router.post("/create-guard", upload.single("file"), uploadGuardFiles);
 // router.post("/activate-guard", activateTourGuard);
 router.get("/get-guard", isAuthenticated, isTourGuard, getGuard);
-router.get("/get-tour-guard/:id", getGuardInfo);
+router.get("/get-tour-guard/:id", isAuthenticated, isTourGuard, getGuardInfo);
 router.put("/update-guard-avatar", isTourGuard, upload.single("image"), updateGuardAvatar);
 router.put("/update-guard-info/:id", isAuthenticated, isTourGuard, updateGuardInfo);
 router.put("/tour-guide-registration/:id",  tourGuardAccountContinue);

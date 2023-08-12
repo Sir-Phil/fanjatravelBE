@@ -8,7 +8,6 @@ import sendMail from "../utils/sendMail";
 import sendToken from "../utils/jwtToken";
 import User from "../models/user";
 import { IUser, IUserRequest } from "../interface/user";
-import { UpdateWriteOpResult } from "mongoose";
 
 
 
@@ -77,7 +76,7 @@ const tourGuardAccountContinue = asyncHandler(async (req: IUserRequest, res: Res
                     }
                 });
     
-                return next(new ErrorHandler("User already exists", 400))
+                return next(new ErrorHandler("User already exist", 400))
                }
         res.status(404).json({
           success: false,
@@ -193,7 +192,7 @@ const logOutGard = asyncHandler (async( req: Request, res: Response, next: NextF
 
 const getGuardInfo = asyncHandler(async(req: Request, res: Response, next: NextFunction) => {
     try {
-        const user = await User.findById(req.params.id)
+        const user = await User.findById(req.params.id).select('-password');
 
         res.status(201).json({
         success: true,
@@ -354,7 +353,7 @@ const uploadFiles = async(req : Request, res : Response, next :NextFunction) => 
         const userEmail = await User.findOne({email});
 
         if(userEmail) {
-         return next(new ErrorHandler("User already exists", 400))
+         return next(new ErrorHandler("User already exist", 400))
            
         }
 
@@ -454,7 +453,7 @@ const loginUser = asyncHandler(async(req: Request, res: Response, next: NextFunc
     const user = await User.findOne({email}).select("+password");
 
     if(!user){
-        return next(new ErrorHandler("User does not exists", 400))
+        return next(new ErrorHandler("User does not exist", 400))
     }
 
     const isPasswordValid = await user.comparePassword(password);

@@ -12,6 +12,7 @@ import categoryRoute from "./routes/categoryRoute";
 import tourActivitiesRoute from  "./routes/toursActivitiesRoute";
 import tourGuardRoutes from "./routes/tourGuardRoutes";
 import createPayPalPayment from "./utils/paypalIntegration";
+import activityTypeRoutes from "./routes/activityTypeRoutes";
 
 const app = express();
 
@@ -52,6 +53,11 @@ app.use("/api/user", userRoutes);
 app.use("/api/activities", tourActivitiesRoute);
 app.use("/api/category", categoryRoute);
 app.use("/api/tour-guard", tourGuardRoutes)
+
+
+//endpoints to return types 
+app.use("/api", activityTypeRoutes)
+
 
 
 //for ErrorHandling

@@ -64,9 +64,11 @@ const TourActivitiesSchema: Schema<ITourActivities> = new Schema({
   images: [
     {
       url: { type: String, required: false },
-      public_id: { type: String, required: false },
     },
   ],
+  // images: {
+  //   type:[String]
+  // },
   reviews:[{
       type: Schema.Types.ObjectId,
       ref: "User",

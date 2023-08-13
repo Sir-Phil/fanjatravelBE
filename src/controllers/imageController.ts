@@ -11,7 +11,7 @@ cloudinaryV2.config({
 });
 
 
-interface CloudinaryUploadResult {
+export interface CloudinaryUploadResult {
   url: string;
   public_id: string;
 }

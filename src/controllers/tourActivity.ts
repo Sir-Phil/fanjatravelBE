@@ -7,7 +7,7 @@ import { IUserRequest } from "../interface/user";
 import { IPlan } from "../interface/activityPlan";
 import User from "../models/user";
 import ErrorHandler from "../utils/ErrorHandler";
-import { deleteImageFromCloudinary, updateImageOnCloudinary, uploadImageToCloudinary } from "./imageController";
+import { CloudinaryUploadResult, deleteImageFromCloudinary, updateImageOnCloudinary, uploadImageToCloudinary } from "./imageController";
 
 
 
@@ -41,9 +41,18 @@ const getAll = asyncHandler(async (req: Request, res: Response, next: NextFuncti
       .skip(pageSize * (page - 1))
       .exec();
 
+
+      const formattedActivities = tourActivities.map(activity => ({
+        ...activity.toObject(),
+        images: activity.images.map((image: IImage) => ({
+          url: image.url,
+          _id: image._id
+        }))
+      }));  
+
     res.status(200).json({
       success: true,
-      activities: tourActivities,
+      activities: formattedActivities,
       page,
       pages: Math.ceil(count / pageSize),
       count,

@@ -1,12 +1,12 @@
 export const activitiesOpt = [
-    'Shopping',
-    'Clubbing, Nightlife & Bars',
-    'Food & Restaurants',
-    'Art & Museum',
-    'History & Culture',
+    'Food tour',
+    'Hiking',
+    'City view tour',
+    'Mountain Climbs',
+    'City tour with biking',
     'Museum Exploration',
-    'Exploration & Sightseeing',
-    'Sport & Recreation',
-    'Beach Life'
+    'History',
+    'Art & Music',
+    'Swimming & Fishing'
     
 ] as const

@@ -227,7 +227,7 @@ const updateGuardInfo = asyncHandler(async(req: IUserRequest, res: Response, nex
         user.age = age;
         user.gender = gender;
         user.language = language;
-        user.activities = language;
+        user.activities = activities;
         user.country = country;
         user.motto = motto;
 

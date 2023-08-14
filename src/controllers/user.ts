@@ -96,6 +96,7 @@ const tourGuardAccountContinue = asyncHandler(async (req: IUserRequest, res: Res
       user.country = req.body.country;
       user.motto = req.body.motto;
       user.language = req.body.language;
+      user.activities = req.body.activities;
       user.isTourGuard = true;
       user.verified = true;
       }
@@ -211,7 +212,7 @@ const getGuardInfo = asyncHandler(async(req: Request, res: Response, next: NextF
 
 const updateGuardInfo = asyncHandler(async(req: IUserRequest, res: Response, next: NextFunction) => {
     try {
-        const {lastName, phoneNumber, firstName, address, age, gender, language, country, motto} = req.body;
+        const {lastName, phoneNumber, firstName, address, age, gender, language, country, motto, activities} = req.body;
     
         const user = await User.findOne(req.user._id);
     
@@ -226,6 +227,7 @@ const updateGuardInfo = asyncHandler(async(req: IUserRequest, res: Response, nex
         user.age = age;
         user.gender = gender;
         user.language = language;
+        user.activities = language;
         user.country = country;
         user.motto = motto;
 

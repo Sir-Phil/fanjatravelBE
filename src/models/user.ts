@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken"
 import { IUser } from "../interface/user";
 import { LanguageOptions } from "../interface/languageOption";
 import { Gender } from "../interface/genderOption";
+import { activitiesOpt } from "../interface/activityTogether";
 
 
 const userSchema = new mongoose.Schema({
@@ -25,8 +26,12 @@ const userSchema = new mongoose.Schema({
     },
     language: { 
         type: [{ type: String, enum: LanguageOptions }],
-          required: false
-         },
+        required: [false, "Select a Language"]
+    },
+    activities: { 
+        type: [{ type: String, enum: activitiesOpt }],
+        required:[ false, "Select Activity To Do Together"]
+    },     
 
     email: {
         type: String,

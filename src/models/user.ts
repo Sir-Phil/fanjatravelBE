@@ -26,12 +26,12 @@ const userSchema = new mongoose.Schema({
     },
     language: { 
         type: [{ type: String, enum: LanguageOptions }],
-        required: [false, "Select a Language"]
-    },
+          required: false
+         },
     activities: { 
-        type: [{ type: String, enum: activitiesOpt }],
-        required:[ false, "Select Activity To Do Together"]
-    },     
+            type: [{ type: String, enum: activitiesOpt }],
+              required: false
+        },     
 
     email: {
         type: String,

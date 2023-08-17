@@ -7,7 +7,7 @@ import { IUserRequest } from "../interface/user";
 import { IPlan } from "../interface/activityPlan";
 import User from "../models/user";
 import ErrorHandler from "../utils/ErrorHandler";
-import { CloudinaryUploadResult, deleteImageFromCloudinary, updateImageOnCloudinary, uploadImageToCloudinary } from "./imageController";
+import { deleteImageFromCloudinary, updateImageOnCloudinary, uploadImageToCloudinary } from "./imageController";
 
 
 
@@ -149,8 +149,18 @@ const getTopTourByReview = asyncHandler(
 const createActivity = asyncHandler(
   async (req: IUserRequest, res: Response, _next: NextFunction) => {
     try {
+
+      const uploadedImages = req.files as Express.Multer.File[];
+      if (uploadedImages.length !== 5) {
+        res.status(400).json({
+          success: false,
+          error: "Please upload exactly 5 images",
+        });
+        return;
+      }
+
       const imageResults = await Promise.all(
-        (req.files as Express.Multer.File[]).map(uploadImageToCloudinary)
+        uploadedImages.map(uploadImageToCloudinary)
       );
       
       const {
@@ -167,6 +177,7 @@ const createActivity = asyncHandler(
         category,
       } = req.body;
 
+      const parsedActivityPlan = Array.isArray(activityPlan) ? activityPlan : [];
 
       const newTourActivity: ITourActivities = await Activities.create({
         activityTitle,
@@ -178,7 +189,7 @@ const createActivity = asyncHandler(
         activityDays,
         activityFee,
         discount,
-        activityPlan: activityPlan.map((plan : IPlan) => ({
+        activityPlan: parsedActivityPlan.map((plan : IPlan) => ({
           _id: null,
           address: plan.address,
           describeLocation: plan.describeLocation,

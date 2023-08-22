@@ -181,7 +181,7 @@ const createActivity = asyncHandler(
 
       const newTourActivity: ITourActivities = await Activities.create({
         activityTitle,
-        activityLocation,
+        activityLocation: JSON.parse(activityLocation),
         activityType,
         period,
         dayOfActivity,

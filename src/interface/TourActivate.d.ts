@@ -11,10 +11,16 @@ interface IImage {
 }
 
 
+interface ILocation {
+    country: string;
+    state: string;
+}
+
+
 
 export interface ITourActivities extends mongoose.Document {
     activityTitle: string;
-    activityLocation: string;
+    activityLocation: ILocation;
     activityType: activityOptions;
     dayOfActivity: daysOption;
     period: string;

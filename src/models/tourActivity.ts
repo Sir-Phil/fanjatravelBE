@@ -1,7 +1,19 @@
 import mongoose, { Schema } from "mongoose";
-import { ITourActivities } from "../interface/TourActivate";
+import { ILocation, ITourActivities } from "../interface/TourActivate";
 import { activityOptions } from "../interface/activityOption";
 import { daysOptions } from "../interface/daysOption";
+
+
+const LocationSchema: Schema<ILocation> = new Schema({
+  country: {
+    type: String,
+    required: [true, "Please enter the country!"],
+  },
+  state: {
+    type: String,
+    required: [true, "Please enter the state!"],
+  },
+});
 
 
 const TourActivitiesSchema: Schema<ITourActivities> = new Schema({
@@ -9,10 +21,7 @@ const TourActivitiesSchema: Schema<ITourActivities> = new Schema({
     type: String,
     required: [true, "Please enter the activity title!"],
   },
-  activityLocation: {
-    type: String,
-    required: [true, "Please enter the activity location!"],
-  },
+  activityLocation: LocationSchema,
   activityType: {
     type: String,
     enum: Object.values(activityOptions),

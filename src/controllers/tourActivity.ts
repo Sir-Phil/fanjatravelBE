@@ -340,7 +340,7 @@ const getActivitiesByTourGuide = asyncHandler(async (req: IUserRequest, res: Res
     }
 
     // Retrieve activities created by the tour guide
-    const activities = await Activities.find({ user: id });
+    const activities = await Activities.find({ tourGuard: id });
 
     // Return the activities
     res.status(200).json({

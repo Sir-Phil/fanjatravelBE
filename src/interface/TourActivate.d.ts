@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { ITouristReview } from "./Review";
-import { IPlan } from "./activityPlan";
+import { IPlan } from "./activityPlans";
 import { IUser } from "./user";
 import { ICategory } from "./category";
 
@@ -16,6 +16,11 @@ interface ILocation {
     state: string;
 }
 
+interface ICategory {
+    Id: string;
+    title: string;
+}
+
 
 
 export interface ITourActivities extends mongoose.Document {
@@ -28,12 +33,12 @@ export interface ITourActivities extends mongoose.Document {
     activityDays: Date;
     activityFee: number;
     discount: number;
-    activityPlan: IPlan;
+    activityPlan: IPlan[];
     rating?: number;
     images: IImage[];
     reviews?: IUser[];
     numberOfReviews: number;
-    category: mongoose.Types.ObjectId | ICategory;
+    category: ICategory;
     tourGuard: mongoose.Types.ObjectId | IUser;
     basePrice: number;
     createdAt: Date;

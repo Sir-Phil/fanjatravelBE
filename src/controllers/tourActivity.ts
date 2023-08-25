@@ -4,7 +4,6 @@ import Activities from "../models/tourActivity";
 import Category from "../models/category";
 import { IImage, ITourActivities } from "../interface/TourActivate";
 import { IUserRequest } from "../interface/user";
-import { IPlan } from "../interface/activityPlan";
 import User from "../models/user";
 import ErrorHandler from "../utils/ErrorHandler";
 import { deleteImageFromCloudinary, updateImageOnCloudinary, uploadImageToCloudinary } from "./imageController";
@@ -177,7 +176,7 @@ const createActivity = asyncHandler(
         category,
       } = req.body;
 
-      const parsedActivityPlan = Array.isArray(activityPlan) ? activityPlan : [];
+      // const parsedActivityPlan = Array.isArray(activityPlan) ? activityPlan : [];
 
       const newTourActivity: ITourActivities = await Activities.create({
         activityTitle,
@@ -189,15 +188,9 @@ const createActivity = asyncHandler(
         activityDays,
         activityFee,
         discount,
-        activityPlan: parsedActivityPlan.map((plan : IPlan) => ({
-          _id: null,
-          address: plan.address,
-          describeLocation: plan.describeLocation,
-          planTitle: plan.planTitle,
-          planTitleDesc: plan.planTitleDesc,
-        })),
+        activityPlan: JSON.parse(activityPlan),
         images : imageResults,
-        category,
+        category: JSON.parse(category),
         tourGuard: req.user._id,
       });
 
@@ -239,7 +232,7 @@ const GetTour = asyncHandler(async (req: Request, res: Response) => {
 //@access TourGuard
 
 const getTourById = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, _next: NextFunction) => {
     try {
       const activityId: string = req.params.activityId;
       const tourActivity: ITourActivities | null = await Activities.findById(

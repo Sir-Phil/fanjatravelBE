@@ -2,6 +2,8 @@ import mongoose, { Schema } from "mongoose";
 import { ILocation, ITourActivities } from "../interface/TourActivate";
 import { activityOptions } from "../interface/activityOption";
 import { daysOptions } from "../interface/daysOption";
+import { activityPlanSchema } from "../interface/activityPlans";
+import { ICategory } from "../interface/category";
 
 
 const LocationSchema: Schema<ILocation> = new Schema({
@@ -14,6 +16,19 @@ const LocationSchema: Schema<ILocation> = new Schema({
     required: [true, "Please enter the state!"],
   },
 });
+
+
+const categoryEntrySchema: Schema<ICategory> = new Schema({
+  id: {
+    type: String,
+    required: [true, "Please enter the country!"],
+  },
+  title: {
+    type: String,
+    required: [true, "Please enter the state!"],
+  },
+});
+
 
 
 const TourActivitiesSchema: Schema<ITourActivities> = new Schema({
@@ -51,21 +66,7 @@ const TourActivitiesSchema: Schema<ITourActivities> = new Schema({
     type: Number,
     default: 0,
   },
-  activityPlan: [{
-    describeLocation:{
-      type: String,
-      required: [true, "Please provide the activity Location"]
-    },
-    planTitle: {
-      type: String,
-      required: [true, "Please provide the activity plan title"]
-    },
-  planTitleDesc: {
-      type: String,
-      required: [true, "Please provide the activity plan description"]
-  },
-}
-],
+  activityPlan: [activityPlanSchema],
 
   rating: {
     type: Number,
@@ -89,11 +90,7 @@ const TourActivitiesSchema: Schema<ITourActivities> = new Schema({
   basePrice: {
     type: Number,
   },
-  category: {
-    type: Schema.Types.ObjectId,
-    ref: "Category",
-    required: true,
-  },
+  category: categoryEntrySchema,
   tourGuard: {
     type: Schema.Types.ObjectId,
     ref: "User",

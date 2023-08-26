@@ -202,7 +202,7 @@ const createActivity = asyncHandler(
        console.error(error);
       res.status(500).json({ error: error.message,
         success: false,
-        message: 'Error uploading images'
+        message: 'Error Creating Activities'
        });
     }
   }

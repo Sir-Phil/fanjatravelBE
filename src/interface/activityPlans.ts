@@ -8,6 +8,10 @@ interface IPlan extends mongoose.Document{
 }
 
 export const activityPlanSchema: Schema<IPlan> = new Schema({
+  address:{
+    type: String,
+    required: [true, "Please provide the activity Address"]
+  },
     describeLocation:{
         type: String,
         required: [true, "Please provide the activity Location"]

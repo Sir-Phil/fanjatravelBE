@@ -36,8 +36,8 @@ const createPayPalPayment = async (amount: number, useCard: boolean = false, tot
         ],
 
         redirect_urls: {
-            return_url: "/",
-            cancel_url: "/"
+            return_url: "https://magnificent-rabanadas-4a5afb.netlify.app/success",
+            cancel_url: "https://magnificent-rabanadas-4a5afb.netlify.app/cancel"
         },
     };
 

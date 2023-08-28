@@ -21,7 +21,7 @@ const createPayPalPayment = async (amount: number, useCard: boolean = false, tot
     const payMethod = useCard ? "credit_card" : "paypal";
 
     const createPaymentJson = {
-        intent: "Tourist",
+        intent: "sale",
         payer: {
             payment_method : payMethod,
         },
@@ -36,8 +36,8 @@ const createPayPalPayment = async (amount: number, useCard: boolean = false, tot
         ],
 
         redirect_urls: {
-            return_url: "https://magnificent-rabanadas-4a5afb.netlify.app/success",
-            cancel_url: "https://magnificent-rabanadas-4a5afb.netlify.app/cancel"
+            return_url: "/",
+            cancel_url: "/"
         },
     };
 

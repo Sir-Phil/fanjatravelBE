@@ -9,6 +9,8 @@ import Activities from "../models/tourActivity";
 import { IBooking } from "../interface/booking";
 import createPayPalPayment from "../utils/paypalIntegration";
 
+
+//const serviceCharge = 10;
 // POST /api/bookings
 const newBooking = asyncHandler(
   async (req: IUserRequest, res: Response, next: NextFunction) => {
@@ -40,6 +42,14 @@ const newBooking = asyncHandler(
         return next(new ErrorHandler("Tour guide not found", 404));
       }
 
+      // Ensure serviceCharge is a valid number
+      const parsedServiceCharge: number = parseFloat(serviceCharge);
+      if (isNaN(parsedServiceCharge) || parsedServiceCharge < 0) {
+        res
+          .status(400)
+          .json({ success: false, message: "Invalid serviceCharge" });
+      }
+
       // Ensure numOfPerson is a valid number
       const numberOfPersons: number = parseInt(numOfPerson, 10);
       if (isNaN(numberOfPersons) || numberOfPersons <= 0) {
@@ -58,6 +68,7 @@ const newBooking = asyncHandler(
       const totalAmount: number = (paidAmount * numberOfPersons) + serviceCharge;
       console.log('paidAmount:', paidAmount);
       console.log('numberOfPersons:', numberOfPersons);
+      console.log('serviceCharge:', serviceCharge);
 
       //Create a new booking
       const booking = new Booking({

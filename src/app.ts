@@ -36,16 +36,28 @@ if (process.env.NODE_ENV !== "PRODUCTION") {
     
   }
 
-  app.post("/api/paypal/gateway", async(req: Request, res: Response) => {
-    const {amount, useCard, totalAmount} = req.body;
+  // app.post("/api/paypal/gateway", async(req: Request, res: Response) => {
+  //   const {amount, useCard, totalAmount} = req.body;
 
-    try {
-      const approvalUrl = await createPayPalPayment(amount, useCard, totalAmount);
-      res.json({success: true, approvalUrl});
-    } catch (error) {
-      res.status(500).json({success: false, message: "Payment Creation failed"});
-    }
-  })
+  //   try {
+  //     const approvalUrl = await createPayPalPayment(amount, useCard, totalAmount);
+  //     res.json({success: true, approvalUrl});
+  //   } catch (error) {
+  //     res.status(500).json({success: false, message: "Payment Creation failed"});
+  //   }
+  // })
+
+  // New route for PayPal Express Checkout initiation
+app.post("/api/paypal/express-checkout", async (req: Request, res: Response) => {
+  const { amount, useCard, totalAmount } = req.body;
+
+  try {
+    const approvalUrl = await createPayPalPayment(amount, useCard, totalAmount);
+    res.json({ success: true, approvalUrl });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Paypal payment creation failed" });
+  }
+});
 
 //api endpoint routes
 app.use("/api/booking", bookingRoute)

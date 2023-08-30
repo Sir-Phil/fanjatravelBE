@@ -9,8 +9,6 @@ import Activities from "../models/tourActivity";
 import { IBooking } from "../interface/booking";
 import createPayPalPayment from "../utils/paypalIntegration";
 
-
-//const serviceCharge = 10;
 // POST /api/bookings
 const newBooking = asyncHandler(
   async (req: IUserRequest, res: Response, next: NextFunction) => {
@@ -20,7 +18,6 @@ const newBooking = asyncHandler(
         fName,
         lName,
         email,
-        phoneNumber,
         dateBooked,
         timeBooked,
         numOfPerson,
@@ -43,14 +40,6 @@ const newBooking = asyncHandler(
         return next(new ErrorHandler("Tour guide not found", 404));
       }
 
-      // Ensure serviceCharge is a valid number
-      const parsedServiceCharge: number = parseFloat(serviceCharge);
-      if (isNaN(parsedServiceCharge) || parsedServiceCharge < 0) {
-        res
-          .status(400)
-          .json({ success: false, message: "Invalid serviceCharge" });
-      }
-
       // Ensure numOfPerson is a valid number
       const numberOfPersons: number = parseInt(numOfPerson, 10);
       if (isNaN(numberOfPersons) || numberOfPersons <= 0) {
@@ -69,7 +58,6 @@ const newBooking = asyncHandler(
       const totalAmount: number = (paidAmount * numberOfPersons) + serviceCharge;
       console.log('paidAmount:', paidAmount);
       console.log('numberOfPersons:', numberOfPersons);
-      console.log('serviceCharge:', serviceCharge);
 
       //Create a new booking
       const booking = new Booking({
@@ -78,7 +66,6 @@ const newBooking = asyncHandler(
         email,
         fName,
         lName,
-        phoneNumber,
         dateBooked,
         timeBooked,
         numOfPerson: numberOfPersons,
@@ -180,5 +167,29 @@ const deleteBooking = asyncHandler(async (req: Request, res: Response, next: Nex
   }
 });
 
+// @Desc GetBooking And TourGuard 
+// @Route /api/bookings/:id
+// @Method DELETE
+//@access Admin
+const getAllBookingsWithTourGuard = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    // Fetch all bookings along with their associated tourGuard details
+    const bookings = await Booking.find().populate("tourGuard", "firstName lastName");
 
-export { newBooking, myBookings, myBookingId, deleteBooking };
+    res.status(200).json({
+      success: true,
+      data: bookings,
+    });
+  } catch (error: any) {
+    console.error("Error fetching bookings:", error);
+     return next(new ErrorHandler(error.message, 500));
+  }
+};
+
+export { 
+  newBooking, 
+  myBookings, 
+  myBookingId, 
+  deleteBooking,
+  getAllBookingsWithTourGuard, 
+};
